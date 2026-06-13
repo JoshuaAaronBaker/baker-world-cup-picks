@@ -1,6 +1,7 @@
 import type { Match, Team } from "@prisma/client";
 
 const TEAM_FLAG_OVERRIDES: Record<string, string> = {
+  ENG: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}",
   SCO: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
 };
 

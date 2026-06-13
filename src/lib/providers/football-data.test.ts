@@ -33,6 +33,16 @@ const payload: FootballDataMatchesPayload = {
       awayTeam: { id: null, name: null },
       score: { winner: null, fullTime: { home: null, away: null } },
     },
+    {
+      id: 103,
+      utcDate: "2026-06-13T19:00:00Z",
+      status: "TIMED",
+      matchday: 2,
+      stage: "GROUP_STAGE",
+      homeTeam: { id: 3, name: "England", tla: "ENG" },
+      awayTeam: { id: null, name: null },
+      score: { winner: null, fullTime: { home: null, away: null } },
+    },
   ],
 };
 
@@ -73,14 +83,16 @@ describe("football-data provider", () => {
 
     const mexico = await prisma.team.findFirstOrThrow({ where: { providerId: "1" } });
     const scotland = await prisma.team.findFirstOrThrow({ where: { providerId: "2" } });
+    const england = await prisma.team.findFirstOrThrow({ where: { providerId: "3" } });
     const finalMatch = await prisma.match.findUniqueOrThrow({ where: { providerId: "101" } });
     const timedMatch = await prisma.match.findUniqueOrThrow({ where: { providerId: "102" } });
 
-    expect(result.teamsImported).toBe(2);
-    expect(result.matchesImported).toBe(2);
+    expect(result.teamsImported).toBe(3);
+    expect(result.matchesImported).toBe(3);
     expect(mexico.name).toBe("Mexico");
     expect(mexico.flagEmoji).toBe("🇲🇽");
     expect(scotland.flagEmoji).toBe("\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}");
+    expect(england.flagEmoji).toBe("\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}");
     expect(finalMatch.status).toBe(MatchStatus.FINAL);
     expect(finalMatch.homeScore).toBe(2);
     expect(finalMatch.awayScore).toBe(1);
