@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum MatchPhase {
+  GROUP_STAGE
+  ROUND_OF_32
+  ROUND_OF_16
+  QUARTER_FINAL
+  SEMI_FINAL
+  THIRD_PLACE
+  FINAL
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LOCKED
+  FINAL
+  POSTPONED
+  CANCELLED
+  ABANDONED
+}
+
+enum PredictionStatus {
+  DRAFT
+  VALID
+  SCORED
+}
+
+enum AuditAction {
+  ADMIN_OVERRIDE
+  CLEAR_OVERRIDE
+  REOPEN_PREDICTIONS
+  RECALCULATE_SCORES
+  SYNC_STARTED
+  SYNC_SUCCEEDED
+  SYNC_FAILED
+  USER_DISABLED
+  USER_HIDDEN
+}
+
+model User {
+  id                  String     @id @default(cuid())
+  username            String
+  normalizedUsername  String     @unique
+  passwordHash        String
+  role                UserRole   @default(USER)
+  disabled            Boolean    @default(false)
+  hideFromLeaderboard Boolean    @default(false)
+  predictions         Prediction[]
+  auditLogs           AuditLog[] @relation("ActorAuditLogs")
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+}
+
+model Tournament {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  year      Int
+  active    Boolean  @default(false)
+  teams     Team[]
+  matches   Match[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id            String       @id @default(cuid())
+  tournamentId  String
+  tournament    Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  name          String
+  countryCode   String
+  flagEmoji     String
+  providerId    String?
+  homeMatches   Match[]      @relation("HomeTeam")
+  awayMatches   Match[]      @relation("AwayTeam")
+  advancerPicks Prediction[] @relation("PredictedAdvancer")
+  matchWinners  Match[]      @relation("ActualAdvancer")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([tournamentId, countryCode])
+}
+
+model Match {
+  id                    String       @id @default(cuid())
+  tournamentId          String
+  tournament            Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  providerId            String?      @unique
+  phase                 MatchPhase
+  status                MatchStatus  @default(SCHEDULED)
+  matchday              Int?
+  kickoffAt             DateTime
+  homeTeamId            String?
+  homeTeam              Team?        @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId            String?
+  awayTeam              Team?        @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homePlaceholder       String?
+  awayPlaceholder       String?
+  homeScore             Int?
+  awayScore             Int?
+  advancingTeamId       String?
+  advancingTeam         Team?        @relation("ActualAdvancer", fields: [advancingTeamId], references: [id])
+  manualOverrides       Json?
+  latestProviderPayload Json?
+  predictionsReopened   Boolean      @default(false)
+  predictions           Prediction[]
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@index([tournamentId, kickoffAt])
+  @@index([status])
+}
+
+model Prediction {
+  id                       String           @id @default(cuid())
+  userId                   String
+  user                     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchId                  String
+  match                    Match            @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  homeScore                Int
+  awayScore                Int
+  predictedAdvancingTeamId String?
+  predictedAdvancingTeam   Team?            @relation("PredictedAdvancer", fields: [predictedAdvancingTeamId], references: [id])
+  status                   PredictionStatus @default(VALID)
+  pointsAwarded            Int?
+  exactScore               Boolean          @default(false)
+  correctResult            Boolean          @default(false)
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+
+  @@unique([userId, matchId])
+  @@index([matchId])
+}
+
+model SyncRun {
+  id         String    @id @default(cuid())
+  provider   String
+  status     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  message    String?
+  createdAt  DateTime  @default(now())
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  action    AuditAction
+  actorId   String?
+  actor     User?       @relation("ActorAuditLogs", fields: [actorId], references: [id])
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime    @default(now())
+}
