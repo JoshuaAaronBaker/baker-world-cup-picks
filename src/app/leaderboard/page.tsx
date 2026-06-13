@@ -28,6 +28,7 @@ export default async function LeaderboardPage() {
           <p className="eyebrow">Public leaderboard</p>
           <h1>Rankings</h1>
           <p className="form-note">{syncStatus.label}</p>
+          <p className="form-note">Scoring: 3 points for an exact score, 1 for the right result.</p>
         </div>
         <ol className="leaderboard-list leaderboard-page-list">
           {leaderboard.length ? (
