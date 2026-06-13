@@ -24,6 +24,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
   const status = getMatchStatusLabel(match);
   const knockout = isKnockoutPhase(match.phase);
   const canViewBreakdown = locked;
+  const canSavePrediction = !disabled;
   const stateClass = status.toLowerCase().replace(/\s+/g, "-");
 
   return (
@@ -94,9 +95,11 @@ export function PredictionForm({ match }: PredictionFormProps) {
             Picks
           </a>
         ) : null}
-        <button className="button small" type="submit" disabled={disabled}>
-          {prediction ? "Update" : "Save"}
-        </button>
+        {canSavePrediction ? (
+          <button className="button small" type="submit">
+            {prediction ? "Update" : "Save"}
+          </button>
+        ) : null}
       </div>
     </form>
   );
