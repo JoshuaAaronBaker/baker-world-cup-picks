@@ -10,7 +10,10 @@
     "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:start": "scripts/db-start.sh",
+    "db:stop": "scripts/db-stop.sh",
+    "db:reset": "prisma migrate reset --force"
   },
   "repository": {
     "type": "git",
