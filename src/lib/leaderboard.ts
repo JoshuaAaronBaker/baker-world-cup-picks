@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { MatchStatus, UserRole } from "@prisma/client";
 import { rankMedals } from "@/components/leaderboard-rank";
 import { prisma } from "@/lib/prisma";
 
@@ -22,7 +22,7 @@ type LeaderboardUserInput = {
   }>;
 };
 
-export function rankLeaderboardUsers(users: LeaderboardUserInput[]): LeaderboardRow[] {
+export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredMatches?: number): LeaderboardRow[] {
   const sortedUsers = users
     .map((user) => {
       const points = user.predictions.reduce(
@@ -33,7 +33,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
       const correctResults = user.predictions.filter(
         (prediction) => prediction.correctResult,
       ).length;
-      const scoredPicks = user.predictions.length;
+      const scoredPicks = totalScoredMatches ?? user.predictions.length;
 
       return {
         username: user.username,
@@ -112,26 +112,36 @@ export function formatLeaderboardPlacement(row?: Pick<LeaderboardRow, "rank" | "
 }
 
 export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
-  const users = await prisma.user.findMany({
-    where: { hideFromLeaderboard: false, role: UserRole.USER },
-    select: {
-      username: true,
-      createdAt: true,
-      predictions: {
-        where: {
-          pointsAwarded: { not: null },
-        },
-        select: {
-          pointsAwarded: true,
-          exactScore: true,
-          correctResult: true,
+  const [users, totalScoredMatches] = await Promise.all([
+    prisma.user.findMany({
+      where: { hideFromLeaderboard: false, role: UserRole.USER },
+      select: {
+        username: true,
+        createdAt: true,
+        predictions: {
+          where: {
+            pointsAwarded: { not: null },
+          },
+          select: {
+            pointsAwarded: true,
+            exactScore: true,
+            correctResult: true,
+          },
         },
       },
-    },
-    orderBy: { createdAt: "asc" },
-  });
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.match.count({
+      where: {
+        tournament: { active: true },
+        status: MatchStatus.FINAL,
+        homeScore: { not: null },
+        awayScore: { not: null },
+      },
+    }),
+  ]);
 
-  const ranked = rankLeaderboardUsers(users);
+  const ranked = rankLeaderboardUsers(users, totalScoredMatches);
 
   return typeof limit === "number" ? ranked.slice(0, limit) : ranked;
 }

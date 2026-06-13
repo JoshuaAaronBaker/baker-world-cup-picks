@@ -20,7 +20,7 @@ async function cleanupLeaderboardRoleTestData() {
 }
 
 describe("getLeaderboard", () => {
-  it("counts correct picks out of scored picks", () => {
+  it("counts correct picks out of completed matches, including missed picks", () => {
     const [row] = rankLeaderboardUsers([
       {
         username: `${testUsernamePrefix}counter`,
@@ -31,11 +31,11 @@ describe("getLeaderboard", () => {
           { pointsAwarded: 0, exactScore: false, correctResult: false },
         ],
       },
-    ]);
+    ], 4);
 
     expect(row).toMatchObject({
       correctResults: 2,
-      scoredPicks: 3,
+      scoredPicks: 4,
     });
   });
 
