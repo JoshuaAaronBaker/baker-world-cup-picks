@@ -1,6 +1,6 @@
 import { savePrediction } from "@/app/predictions/actions";
 import { MatchTiming } from "@/components/match-timing";
-import { plainTeamName, teamName } from "@/lib/display";
+import { plainTeamName, teamCode, teamName } from "@/lib/display";
 import {
   formatPhase,
   getMatchStatusLabel,
@@ -47,7 +47,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
       </div>
       <div className="score-inputs" aria-label="Score prediction">
         <label>
-          <span>{plainTeamName(match, "home")}</span>
+          <span>{teamCode(match, "home")}</span>
           <input
             aria-label={`${teamName(match, "home")} score`}
             name="homeScore"
@@ -60,7 +60,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
           />
         </label>
         <label>
-          <span>{plainTeamName(match, "away")}</span>
+          <span>{teamCode(match, "away")}</span>
           <input
             aria-label={`${teamName(match, "away")} score`}
             name="awayScore"
