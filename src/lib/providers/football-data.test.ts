@@ -86,6 +86,52 @@ describe("football-data provider", () => {
     expect(timedMatch.homePlaceholder).toBe("Home TBD");
   });
 
+  it("scores predictions after a final score sync", async () => {
+    const tournamentSlug = `${testSlugPrefix}${crypto.randomUUID()}`;
+    const firstPayload: FootballDataMatchesPayload = {
+      matches: [
+        {
+          ...payload.matches[0],
+          status: "TIMED",
+          score: { winner: null, fullTime: { home: null, away: null } },
+        },
+      ],
+    };
+    await syncFootballDataPayload(firstPayload, {
+      tournamentSlug,
+      tournamentName: "Provider Test Cup",
+      active: false,
+    });
+    const match = await prisma.match.findUniqueOrThrow({ where: { providerId: "101" } });
+    const user = await prisma.user.create({
+      data: {
+        username: `sync_admin_${crypto.randomUUID()}`,
+        normalizedUsername: `sync_admin_${crypto.randomUUID()}`,
+        passwordHash: "hash",
+      },
+    });
+
+    await prisma.prediction.create({
+      data: {
+        userId: user.id,
+        matchId: match.id,
+        homeScore: 2,
+        awayScore: 1,
+      },
+    });
+
+    await syncFootballDataPayload(payload, {
+      tournamentSlug,
+      tournamentName: "Provider Test Cup",
+      active: false,
+    });
+
+    const prediction = await prisma.prediction.findFirstOrThrow({ where: { userId: user.id } });
+
+    expect(prediction.pointsAwarded).toBe(3);
+    expect(prediction.exactScore).toBe(true);
+  });
+
   it("preserves manual overrides during provider sync", async () => {
     const tournamentSlug = `${testSlugPrefix}${crypto.randomUUID()}`;
     const firstImport = await syncFootballDataPayload(payload, {
