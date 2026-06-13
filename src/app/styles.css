@@ -247,6 +247,39 @@ a {
   gap: 12px;
 }
 
+.match-groups {
+  display: grid;
+  gap: 22px;
+}
+
+.match-date-group h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.phase-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 20px;
+}
+
+.phase-filters a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  padding: 8px 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.phase-filters a.active {
+  border-color: var(--grass);
+  background: #eef7f1;
+  color: var(--grass-dark);
+}
+
 .match-row {
   grid-template-columns: minmax(0, 1fr) auto auto;
   padding: 16px;
@@ -268,6 +301,10 @@ a {
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+.lock-countdown {
+  color: var(--grass-dark);
 }
 
 .teams {
