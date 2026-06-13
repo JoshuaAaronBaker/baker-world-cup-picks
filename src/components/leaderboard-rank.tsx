@@ -1,4 +1,4 @@
-const rankMedals: Record<number, string> = {
+export const rankMedals: Record<number, string> = {
   1: "🥇",
   2: "🥈",
   3: "🥉",

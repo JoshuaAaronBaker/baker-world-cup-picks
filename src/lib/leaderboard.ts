@@ -1,4 +1,5 @@
 import { UserRole } from "@prisma/client";
+import { rankMedals } from "@/components/leaderboard-rank";
 import { prisma } from "@/lib/prisma";
 
 export type LeaderboardRow = {
@@ -104,8 +105,10 @@ export function formatLeaderboardPlacement(row?: Pick<LeaderboardRow, "rank" | "
             ? "rd"
             : "th";
   const placement = `${row.rank}${suffix}`;
+  const medal = rankMedals[row.rank];
+  const label = row.tied ? `Tied for ${placement}` : placement;
 
-  return row.tied ? `Tied for ${placement}` : placement;
+  return medal ? `${medal} ${label}` : label;
 }
 
 export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
