@@ -1,0 +1,10 @@
+.env
+.env.*
+.vercel
+.agents
+skills-lock.json
+node_modules
+.next
+coverage
+*.log
+.DS_Store
