@@ -431,9 +431,117 @@ a {
   gap: 22px;
 }
 
+.match-date-group {
+  display: grid;
+  gap: 12px;
+}
+
+.match-date-toggle {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid rgba(16, 25, 41, 0.1);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 201, 60, 0.18), rgba(24, 168, 96, 0.1)),
+    rgba(255, 255, 255, 0.82);
+  padding: 12px 14px;
+  color: var(--scoreboard);
+  cursor: pointer;
+  box-shadow: 0 10px 24px var(--shadow-card);
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.match-date-toggle:hover,
+.match-date-toggle:focus-visible {
+  border-color: rgba(24, 168, 96, 0.36);
+  box-shadow: 0 14px 28px var(--shadow-soft);
+}
+
+.match-date-toggle:focus-visible {
+  outline: 3px solid rgba(255, 201, 60, 0.48);
+  outline-offset: 3px;
+}
+
+.match-date-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.match-date-icon {
+  display: grid;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(16, 25, 41, 0.08);
+  color: var(--scoreboard);
+  transition:
+    background 160ms ease,
+    transform 220ms ease;
+}
+
+.match-date-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8;
+}
+
+.match-date-group.is-open .match-date-icon {
+  transform: rotate(180deg);
+}
+
 .match-date-group h2 {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 1rem;
+}
+
+.match-date-heading span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.match-date-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 260ms ease,
+    opacity 180ms ease,
+    visibility 0s linear 260ms;
+}
+
+.match-date-group.is-open .match-date-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 260ms ease,
+    opacity 180ms ease 80ms,
+    visibility 0s;
+}
+
+.match-date-panel-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .phase-filters {

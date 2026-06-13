@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MatchPhase } from "@prisma/client";
+import { MatchDateGroup } from "@/components/match-date-group";
 import { PredictionForm } from "@/components/prediction-form";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
@@ -8,6 +9,7 @@ import {
   formatMatchDate,
   getPredictionMatches,
   getPredictionProgress,
+  isMatchLocked,
   PHASE_FILTERS,
   parsePhaseFilter,
 } from "@/lib/matches";
@@ -93,16 +95,24 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
           ))}
         </nav>
         <div className="match-groups">
-          {Object.entries(groupedMatches).map(([date, dateMatches]) => (
-            <section className="match-date-group" key={date} aria-labelledby={`date-${date}`}>
-              <h2 id={`date-${date}`}>{date}</h2>
+          {Object.entries(groupedMatches).map(([date, dateMatches]) => {
+            const hasUnlockedMatch = dateMatches.some((match) => !isMatchLocked(match));
+
+            return (
+              <MatchDateGroup
+                date={date}
+                defaultOpen={hasUnlockedMatch}
+                key={date}
+                matchCount={dateMatches.length}
+              >
               <div className="match-list">
                 {dateMatches.map((match) => (
                   <PredictionForm key={match.id} match={match} />
                 ))}
               </div>
-            </section>
-          ))}
+              </MatchDateGroup>
+            );
+          })}
           {matches.length === 0 ? <p>No matches in this phase yet.</p> : null}
         </div>
       </section>
