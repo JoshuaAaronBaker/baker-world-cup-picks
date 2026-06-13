@@ -5,6 +5,7 @@ import {
   recalculateAllAction,
   recalculateMatchAction,
   reopenMatchAction,
+  syncFootballDataAction,
   updateMatchAction,
   updateUserAction,
 } from "@/app/admin/actions";
@@ -21,7 +22,7 @@ function datetimeLocalValue(date: Date) {
 
 export default async function AdminPage() {
   await requireAdmin();
-  const [matches, teams, users, auditLogs] = await Promise.all([
+  const [matches, teams, users, auditLogs, syncRuns] = await Promise.all([
     prisma.match.findMany({
       where: { tournament: { active: true } },
       include: { homeTeam: true, awayTeam: true, advancingTeam: true },
@@ -38,6 +39,10 @@ export default async function AdminPage() {
       take: 8,
       orderBy: { createdAt: "desc" },
       include: { actor: { select: { username: true } } },
+    }),
+    prisma.syncRun.findMany({
+      take: 5,
+      orderBy: { startedAt: "desc" },
     }),
   ]);
 
@@ -59,11 +64,42 @@ export default async function AdminPage() {
           <p className="eyebrow">Admin</p>
           <h1>Match control</h1>
         </div>
-        <form action={recalculateAllAction}>
-          <button className="button" type="submit">
-            Recalculate all scores
-          </button>
-        </form>
+        <div className="admin-actions">
+          <form action={syncFootballDataAction}>
+            <button className="button" type="submit">
+              Sync football-data
+            </button>
+          </form>
+          <form action={recalculateAllAction}>
+            <button className="ghost-button" type="submit">
+              Recalculate all scores
+            </button>
+          </form>
+        </div>
+
+        <section className="admin-section" aria-labelledby="admin-sync">
+          <h2 id="admin-sync">Provider sync</h2>
+          <div className="table-list">
+            {syncRuns.length ? (
+              syncRuns.map((syncRun) => (
+                <article className="table-row" key={syncRun.id}>
+                  <strong>{syncRun.status}</strong>
+                  <span>{syncRun.provider}</span>
+                  <span>
+                    {syncRun.finishedAt?.toLocaleString() ?? syncRun.startedAt.toLocaleString()} ·{" "}
+                    {syncRun.message ?? "Running"}
+                  </span>
+                </article>
+              ))
+            ) : (
+              <article className="table-row">
+                <strong>No syncs yet</strong>
+                <span>football-data</span>
+                <span>Ready</span>
+              </article>
+            )}
+          </div>
+        </section>
 
         <section className="admin-section" aria-labelledby="admin-matches">
           <h2 id="admin-matches">Matches</h2>

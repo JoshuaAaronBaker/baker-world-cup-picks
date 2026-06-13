@@ -10,6 +10,7 @@ import {
   updateMatchAdmin,
   updateUserAdmin,
 } from "@/lib/admin";
+import { syncFootballDataWorldCup } from "@/lib/providers/football-data";
 
 function getString(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -83,6 +84,17 @@ export async function recalculateAllAction() {
 
   revalidatePath("/admin");
   revalidatePath("/leaderboard");
+}
+
+export async function syncFootballDataAction() {
+  const admin = await requireAdmin();
+  await syncFootballDataWorldCup({ actorId: admin.id });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/leaderboard");
+  revalidatePath("/matches");
+  revalidatePath("/predictions");
 }
 
 export async function updateUserAction(formData: FormData) {
