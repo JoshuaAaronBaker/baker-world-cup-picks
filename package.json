@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:start": "scripts/db-start.sh",
+    "db:stop": "scripts/db-stop.sh",
+    "db:reset": "prisma migrate reset --force"
   },
   "repository": {
     "type": "git",
@@ -42,6 +46,7 @@
     "eslint-config-next": "^16.2.9",
     "prisma": "^6.19.3",
     "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }
