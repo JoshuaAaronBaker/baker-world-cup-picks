@@ -1,16 +1,24 @@
 import { MatchPhase, MatchStatus, PrismaClient } from "@prisma/client";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runNightlyScoreSync } from "@/lib/scheduled-sync";
 
 const prisma = new PrismaClient();
 const testSlugPrefix = "scheduled-sync-test-";
 
 beforeEach(async () => {
+  await cleanupScheduledSyncTestData();
+});
+
+afterEach(async () => {
+  await cleanupScheduledSyncTestData();
+});
+
+async function cleanupScheduledSyncTestData() {
   await prisma.prediction.deleteMany({ where: { match: { tournament: { slug: { startsWith: testSlugPrefix } } } } });
   await prisma.match.deleteMany({ where: { tournament: { slug: { startsWith: testSlugPrefix } } } });
   await prisma.team.deleteMany({ where: { tournament: { slug: { startsWith: testSlugPrefix } } } });
   await prisma.tournament.deleteMany({ where: { slug: { startsWith: testSlugPrefix } } });
-});
+}
 
 async function createScheduledMatch(kickoffAt: Date) {
   const tournament = await prisma.tournament.create({

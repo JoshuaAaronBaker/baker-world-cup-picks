@@ -16,7 +16,7 @@ export async function getPublicTodaysMatches(limit = 6) {
   return prisma.match.findMany({
     where: {
       tournament: { active: true },
-      status: MatchStatus.SCHEDULED,
+      status: { notIn: [MatchStatus.CANCELLED, MatchStatus.ABANDONED] },
       kickoffAt: {
         gte: start,
         lt: end,
