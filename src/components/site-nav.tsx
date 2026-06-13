@@ -10,10 +10,10 @@ export async function SiteNav() {
   const isAdmin = currentUser?.role === UserRole.ADMIN;
 
   const brand = (
-      <Link href="/" className="brand">
-        <span className="brand-mark">B</span>
-        <span>World Cup Pick’ems by Baker</span>
-      </Link>
+    <Link href="/" className="brand">
+      <span className="brand-mark">B</span>
+      <span>World Cup Pick’ems by Baker</span>
+    </Link>
   );
   const actions = (
     <>

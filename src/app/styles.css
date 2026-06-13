@@ -937,13 +937,15 @@ a {
     display: none;
     grid-column: 1 / -1;
     justify-content: flex-start;
-    gap: 8px;
+    align-items: stretch;
+    gap: 6px;
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    font-size: 0.92rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 16px 36px rgba(23, 33, 27, 0.1);
+    padding: 12px;
+    font-size: 0.95rem;
   }
 
   .topbar.menu-open .nav-actions {
@@ -954,6 +956,39 @@ a {
   .nav-actions form,
   .nav-actions button {
     width: 100%;
+  }
+
+  .nav-actions a,
+  .nav-actions button {
+    min-height: 46px;
+    justify-content: flex-start;
+    border-radius: 8px;
+    padding: 0 12px;
+  }
+
+  .nav-actions a:not(.button) {
+    display: flex;
+    align-items: center;
+    color: var(--ink);
+  }
+
+  .nav-actions a:not(.button):hover,
+  .nav-actions a:not(.button):focus-visible {
+    background: #eef7f1;
+    color: var(--grass-dark);
+    outline: none;
+  }
+
+  .nav-actions .button,
+  .nav-actions .ghost-button {
+    min-height: 46px;
+    box-shadow: none;
+  }
+
+  .nav-actions .ghost-button {
+    border: 1px solid var(--line);
+    background: #fbfdfa;
+    color: var(--ink);
   }
 
   .hero {
