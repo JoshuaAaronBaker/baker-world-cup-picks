@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { MatchStatus } from "@prisma/client";
-import { logOut } from "@/app/auth/actions";
 import {
   recalculateAllAction,
   recalculateMatchAction,
@@ -9,6 +7,7 @@ import {
   updateMatchAction,
   updateUserAction,
 } from "@/app/admin/actions";
+import { SiteNav } from "@/components/site-nav";
 import { requireAdmin } from "@/lib/auth";
 import { teamName } from "@/lib/display";
 import { formatPhase } from "@/lib/matches";
@@ -55,17 +54,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="Primary navigation">
-        <Link href="/" className="brand">
-          <span className="brand-mark">B</span>
-          <span>Baker&apos;s World Cup Picks</span>
-        </Link>
-        <form action={logOut}>
-          <button className="ghost-button" type="submit">
-            Log out
-          </button>
-        </form>
-      </nav>
+      <SiteNav />
       <section className="game-grid">
         <div className="section-heading">
           <p className="eyebrow">Admin</p>

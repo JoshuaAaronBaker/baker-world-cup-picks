@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MatchPhase } from "@prisma/client";
-import { logOut } from "@/app/auth/actions";
 import { PredictionForm } from "@/components/prediction-form";
+import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
 import {
   formatMatchDate,
@@ -43,17 +43,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
 
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="Primary navigation">
-        <Link href="/" className="brand">
-          <span className="brand-mark">B</span>
-          <span>Baker&apos;s World Cup Picks</span>
-        </Link>
-        <form action={logOut}>
-          <button className="ghost-button" type="submit">
-            Log out
-          </button>
-        </form>
-      </nav>
+      <SiteNav />
       <section className="game-grid">
         <div className="section-heading">
           <p className="eyebrow">Signed in as {user.username}</p>

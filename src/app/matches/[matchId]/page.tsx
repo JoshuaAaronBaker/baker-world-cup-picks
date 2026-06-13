@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { logOut } from "@/app/auth/actions";
+import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
 import { plainTeamName, teamName } from "@/lib/display";
 import { formatMatchTime, formatPhase } from "@/lib/matches";
@@ -44,17 +44,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="Primary navigation">
-        <Link href="/" className="brand">
-          <span className="brand-mark">B</span>
-          <span>Baker&apos;s World Cup Picks</span>
-        </Link>
-        <form action={logOut}>
-          <button className="ghost-button" type="submit">
-            Log out
-          </button>
-        </form>
-      </nav>
+      <SiteNav />
       <section className="game-grid">
         <div className="section-heading">
           <p className="eyebrow">

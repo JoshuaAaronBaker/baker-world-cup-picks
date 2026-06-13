@@ -1,15 +1,11 @@
 import Link from "next/link";
 import { AuthForm } from "@/components/auth-form";
+import { SiteNav } from "@/components/site-nav";
 
 export default function LoginPage() {
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="Primary navigation">
-        <Link href="/" className="brand">
-          <span className="brand-mark">B</span>
-          <span>Baker&apos;s World Cup Picks</span>
-        </Link>
-      </nav>
+      <SiteNav />
       <section className="game-grid">
         <div className="section-heading">
           <p className="eyebrow">Welcome back</p>

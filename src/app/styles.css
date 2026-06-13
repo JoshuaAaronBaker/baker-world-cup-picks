@@ -81,9 +81,20 @@ a {
 }
 
 .nav-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 12px;
   color: var(--muted);
   font-weight: 700;
+}
+
+.nav-actions form {
+  margin: 0;
+}
+
+.nav-actions a:not(.button),
+.nav-actions button {
+  white-space: nowrap;
 }
 
 .button,
@@ -744,12 +755,14 @@ a {
   }
 
   .topbar {
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: flex-start;
     gap: 12px;
   }
 
   .brand {
-    max-width: 210px;
+    max-width: 100%;
   }
 
   .brand span:last-child {
@@ -757,7 +770,7 @@ a {
   }
 
   .nav-actions {
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 8px;
     font-size: 0.92rem;
@@ -859,10 +872,6 @@ a {
 }
 
 @media (max-width: 430px) {
-  .topbar {
-    display: grid;
-  }
-
   .hero h1 {
     font-size: 2.65rem;
   }

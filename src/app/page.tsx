@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PublicMatchList } from "@/components/public-match-list";
+import { SiteNav } from "@/components/site-nav";
 import { getLeaderboard } from "@/lib/leaderboard";
 import { getPublicTodaysMatches } from "@/lib/public-matches";
 
@@ -10,19 +11,7 @@ export default async function Home() {
 
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="Primary navigation">
-        <Link href="/" className="brand">
-          <span className="brand-mark">B</span>
-          <span>Baker&apos;s World Cup Picks</span>
-        </Link>
-        <div className="nav-actions">
-          <Link href="/leaderboard">Leaderboard</Link>
-          <Link href="/login">Log in</Link>
-          <Link href="/signup" className="button small">
-            Sign up
-          </Link>
-        </div>
-      </nav>
+      <SiteNav />
 
       <section className="hero">
         <div className="hero-copy">
