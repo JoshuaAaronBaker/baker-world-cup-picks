@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeaderboardRank } from "@/components/leaderboard-rank";
 import { PublicMatchList } from "@/components/public-match-list";
 import { SiteNav } from "@/components/site-nav";
 import { getCurrentUser } from "@/lib/auth";
@@ -38,7 +39,7 @@ export default async function LeaderboardPage() {
                   .join(" ")}
                 key={player.username}
               >
-                <span className="rank">{player.rank}</span>
+                <LeaderboardRank rank={player.rank} />
                 {currentUser ? (
                   <Link className="username username-link" href={`/users/${player.username}`}>
                     {player.username}

@@ -269,6 +269,15 @@ a {
   font-weight: 900;
 }
 
+.rank-number {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .username {
   display: grid;
   gap: 2px;

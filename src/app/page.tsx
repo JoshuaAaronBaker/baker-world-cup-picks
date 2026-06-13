@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LeaderboardRank } from "@/components/leaderboard-rank";
 import { PublicMatchList } from "@/components/public-match-list";
 import { SiteNav } from "@/components/site-nav";
 import { getCurrentUser } from "@/lib/auth";
@@ -48,7 +49,7 @@ export default async function Home() {
           <ol className="leaderboard-list">
             {leaderboard.length ? leaderboard.map((player) => (
               <li className={player.rank <= 3 ? `top-rank rank-${player.rank}` : ""} key={player.username}>
-                <span className="rank">{player.rank}</span>
+                <LeaderboardRank rank={player.rank} />
                 <span className="username">
                   {player.username}
                   <small>
