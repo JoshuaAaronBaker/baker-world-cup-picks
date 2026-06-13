@@ -5,6 +5,7 @@ import {
   getMatchStatusLabel,
   isMatchLocked,
   isMatchPredictable,
+  isKnockoutPhase,
   SCORE_MAX,
   SCORE_MIN,
   type MatchWithPrediction,
@@ -31,6 +32,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
   const predictable = isMatchPredictable(match);
   const disabled = locked || !predictable;
   const status = getMatchStatusLabel(match);
+  const knockout = isKnockoutPhase(match.phase);
 
   return (
     <form className="prediction-row" action={savePrediction}>
@@ -71,6 +73,20 @@ export function PredictionForm({ match }: PredictionFormProps) {
           disabled={disabled}
         />
       </div>
+      {knockout && match.homeTeam && match.awayTeam ? (
+        <label className="advancer-select">
+          Advances if draw
+          <select
+            name="predictedAdvancingTeamId"
+            defaultValue={prediction?.predictedAdvancingTeamId ?? ""}
+            disabled={disabled}
+          >
+            <option value="">Pick team</option>
+            <option value={match.homeTeam.id}>{match.homeTeam.name}</option>
+            <option value={match.awayTeam.id}>{match.awayTeam.name}</option>
+          </select>
+        </label>
+      ) : null}
       <div className="prediction-actions">
         <span className="status-pill">{status}</span>
         <button className="button small" type="submit" disabled={disabled}>

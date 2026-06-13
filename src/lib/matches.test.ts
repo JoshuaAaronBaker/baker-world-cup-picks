@@ -1,9 +1,12 @@
 import { MatchStatus } from "@prisma/client";
 import { describe, expect, it } from "vitest";
 import {
+  getImpliedAdvancingTeamId,
+  getPredictedAdvancingTeamId,
   getLockCountdownLabel,
   getPredictionProgress,
   isMatchLocked,
+  isMatchPredictable,
   validateScoreValue,
   type MatchWithPrediction,
 } from "@/lib/matches";
@@ -122,5 +125,42 @@ describe("match prediction helpers", () => {
       predicted: 1,
       available: 2,
     });
+  });
+
+  it("treats knockout placeholders as visible but not predictable", () => {
+    const placeholderMatch = match({
+      phase: "ROUND_OF_32",
+      homeTeam: null,
+      awayTeam: null,
+      homeTeamId: null,
+      awayTeamId: null,
+      homePlaceholder: "Winner Group A",
+      awayPlaceholder: "Runner-up Group B",
+    });
+
+    expect(isMatchPredictable(placeholderMatch)).toBe(false);
+  });
+
+  it("implies the advancing team from non-draw knockout scores", () => {
+    const knockoutMatch = match({ phase: "ROUND_OF_16" });
+
+    expect(getImpliedAdvancingTeamId(knockoutMatch, 2, 1)).toBe("home");
+    expect(getImpliedAdvancingTeamId(knockoutMatch, 0, 1)).toBe("away");
+    expect(getImpliedAdvancingTeamId(knockoutMatch, 1, 1)).toBeNull();
+  });
+
+  it("requires an explicit advancing team for tied knockout predictions", () => {
+    const knockoutMatch = match({ phase: "QUARTER_FINAL" });
+
+    expect(getPredictedAdvancingTeamId(knockoutMatch, 1, 1, null)).toBeNull();
+    expect(getPredictedAdvancingTeamId(knockoutMatch, 1, 1, "away")).toBe("away");
+    expect(getPredictedAdvancingTeamId(knockoutMatch, 1, 1, "other")).toBeNull();
+  });
+
+  it("does not store advancing teams for group-stage predictions", () => {
+    const groupMatch = match({ phase: "GROUP_STAGE" });
+
+    expect(getPredictedAdvancingTeamId(groupMatch, 1, 1, "home")).toBeNull();
+    expect(getPredictedAdvancingTeamId(groupMatch, 2, 1, null)).toBeNull();
   });
 });

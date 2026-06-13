@@ -287,7 +287,7 @@ a {
 
 .prediction-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(160px, auto) auto;
   align-items: center;
   gap: 14px;
   border: 1px solid var(--line);
@@ -367,6 +367,30 @@ a {
 }
 
 .score-inputs input:disabled {
+  background: #f3f5f1;
+  color: var(--muted);
+}
+
+.advancer-select {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.advancer-select select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  padding: 0 10px;
+}
+
+.advancer-select select:disabled {
   background: #f3f5f1;
   color: var(--muted);
 }
@@ -489,6 +513,7 @@ a {
 
   .score-pick,
   .score-inputs,
+  .advancer-select,
   .status-pill,
   .prediction-actions {
     justify-self: start;
