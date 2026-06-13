@@ -1,6 +1,6 @@
 import { savePrediction } from "@/app/predictions/actions";
+import { MatchTiming } from "@/components/match-timing";
 import {
-  formatMatchTime,
   formatPhase,
   getMatchStatusLabel,
   isMatchLocked,
@@ -37,7 +37,8 @@ export function PredictionForm({ match }: PredictionFormProps) {
       <input type="hidden" name="matchId" value={match.id} />
       <div>
         <p className="match-time">
-          {formatPhase(match.phase)} · {formatMatchTime(match.kickoffAt)}
+          {formatPhase(match.phase)} ·{" "}
+          <MatchTiming kickoffAt={match.kickoffAt.toISOString()} locked={locked} />
         </p>
         <div className="teams">
           <span>{teamName(match, "home")}</span>
@@ -71,7 +72,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
         />
       </div>
       <div className="prediction-actions">
-        <span className="status-pill">{prediction ? status : status}</span>
+        <span className="status-pill">{status}</span>
         <button className="button small" type="submit" disabled={disabled}>
           {prediction ? "Update" : "Save"}
         </button>
