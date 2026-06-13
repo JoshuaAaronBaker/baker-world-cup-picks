@@ -3,6 +3,7 @@ import { MatchPhase } from "@prisma/client";
 import { PredictionForm } from "@/components/prediction-form";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
+import { formatLeaderboardPlacement, getLeaderboard } from "@/lib/leaderboard";
 import {
   formatMatchDate,
   getPredictionMatches,
@@ -37,7 +38,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
   const user = await requireUser();
   const params = await searchParams;
   const phase = parsePhaseFilter(params?.phase);
-  const [matches, points] = await Promise.all([
+  const [matches, points, leaderboard] = await Promise.all([
     getPredictionMatches(user.id, phase),
     prisma.prediction.aggregate({
       where: {
@@ -47,11 +48,15 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
       },
       _sum: { pointsAwarded: true },
     }),
+    getLeaderboard(),
   ]);
   const progress = getPredictionProgress(matches);
   const groupedMatches = groupMatchesByDate(matches);
   const activePhase = phase ?? "all";
   const totalPoints = points._sum.pointsAwarded ?? 0;
+  const placement = formatLeaderboardPlacement(
+    leaderboard.find((player) => player.username === user.username),
+  );
 
   return (
     <main className="app-shell">
@@ -65,6 +70,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
           <div className="points-counter" aria-label="Total points">
             <span>Total points</span>
             <strong>{totalPoints}</strong>
+            {placement ? <small>{placement}</small> : null}
           </div>
         </div>
         <p className="progress-note">

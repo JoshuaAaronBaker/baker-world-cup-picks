@@ -642,6 +642,14 @@ a {
   font-weight: 950;
 }
 
+.points-counter small {
+  grid-column: 1 / -1;
+  justify-self: end;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .rules-note {
   display: grid;
   gap: 4px;

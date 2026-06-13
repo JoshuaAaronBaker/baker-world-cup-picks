@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
 import { teamName } from "@/lib/display";
+import { formatLeaderboardPlacement, getLeaderboard } from "@/lib/leaderboard";
 import { formatMatchTime, formatPhase } from "@/lib/matches";
 import { canViewPrediction, canViewPredictionBreakdown } from "@/lib/prediction-visibility";
 import { prisma } from "@/lib/prisma";
@@ -31,23 +32,26 @@ function pointsLabel(pointsAwarded: number | null) {
 export default async function UserPage({ params }: UserPageProps) {
   const viewer = await requireUser();
   const { username } = await params;
-  const profileUser = await prisma.user.findUnique({
-    where: { normalizedUsername: normalizeUsername(decodeURIComponent(username)) },
-    include: {
-      predictions: {
-        include: {
-          predictedAdvancingTeam: true,
-          match: {
-            include: {
-              homeTeam: true,
-              awayTeam: true,
+  const [profileUser, leaderboard] = await Promise.all([
+    prisma.user.findUnique({
+      where: { normalizedUsername: normalizeUsername(decodeURIComponent(username)) },
+      include: {
+        predictions: {
+          include: {
+            predictedAdvancingTeam: true,
+            match: {
+              include: {
+                homeTeam: true,
+                awayTeam: true,
+              },
             },
           },
+          orderBy: { match: { kickoffAt: "asc" } },
         },
-        orderBy: { match: { kickoffAt: "asc" } },
       },
-    },
-  });
+    }),
+    getLeaderboard(),
+  ]);
 
   if (!profileUser || (profileUser.hideFromLeaderboard && profileUser.id !== viewer.id)) {
     notFound();
@@ -64,6 +68,9 @@ export default async function UserPage({ params }: UserPageProps) {
     (total, prediction) => total + (prediction.pointsAwarded ?? 0),
     0,
   );
+  const placement = formatLeaderboardPlacement(
+    leaderboard.find((player) => player.username === profileUser.username),
+  );
 
   return (
     <main className="app-shell">
@@ -77,6 +84,7 @@ export default async function UserPage({ params }: UserPageProps) {
           <div className="points-counter" aria-label="Total points">
             <span>Total points</span>
             <strong>{totalPoints}</strong>
+            {placement ? <small>{placement}</small> : null}
           </div>
         </div>
         <div className="table-list">

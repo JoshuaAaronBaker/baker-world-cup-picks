@@ -1,6 +1,6 @@
 import { PrismaClient, UserRole } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { getLeaderboard, rankLeaderboardUsers } from "@/lib/leaderboard";
+import { formatLeaderboardPlacement, getLeaderboard, rankLeaderboardUsers } from "@/lib/leaderboard";
 
 const prisma = new PrismaClient();
 const testUsernamePrefix = "leaderboard_role_";
@@ -37,6 +37,30 @@ describe("getLeaderboard", () => {
       correctResults: 2,
       scoredPicks: 3,
     });
+  });
+
+  it("formats tied and untied leaderboard placements", () => {
+    const rows = rankLeaderboardUsers([
+      {
+        username: `${testUsernamePrefix}first`,
+        createdAt: new Date("2026-01-01T00:00:00.000Z"),
+        predictions: [{ pointsAwarded: 3, exactScore: true, correctResult: true }],
+      },
+      {
+        username: `${testUsernamePrefix}also_first`,
+        createdAt: new Date("2026-01-02T00:00:00.000Z"),
+        predictions: [{ pointsAwarded: 3, exactScore: true, correctResult: true }],
+      },
+      {
+        username: `${testUsernamePrefix}third`,
+        createdAt: new Date("2026-01-03T00:00:00.000Z"),
+        predictions: [{ pointsAwarded: 1, exactScore: false, correctResult: true }],
+      },
+    ]);
+
+    expect(formatLeaderboardPlacement(rows[0])).toBe("Tied for 1st");
+    expect(formatLeaderboardPlacement(rows[1])).toBe("Tied for 1st");
+    expect(formatLeaderboardPlacement(rows[2])).toBe("3rd");
   });
 
   it("excludes admin accounts even when they are not hidden", async () => {

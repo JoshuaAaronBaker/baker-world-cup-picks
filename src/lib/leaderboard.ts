@@ -8,6 +8,7 @@ export type LeaderboardRow = {
   exactScores: number;
   correctResults: number;
   scoredPicks: number;
+  tied: boolean;
 };
 
 type LeaderboardUserInput = {
@@ -66,6 +67,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
       exactScores: user.exactScores,
       correctResults: user.correctResults,
       scoredPicks: user.scoredPicks,
+      tied: false,
     };
   });
 
@@ -75,7 +77,35 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
     }
   }
 
-  return ranked;
+  const rankCounts = new Map<number, number>();
+
+  for (const user of ranked) {
+    rankCounts.set(user.rank, (rankCounts.get(user.rank) ?? 0) + 1);
+  }
+
+  return ranked.map((user) => ({
+    ...user,
+    tied: (rankCounts.get(user.rank) ?? 0) > 1,
+  }));
+}
+
+export function formatLeaderboardPlacement(row?: Pick<LeaderboardRow, "rank" | "tied">) {
+  if (!row) return null;
+
+  const tens = row.rank % 100;
+  const suffix =
+    tens >= 11 && tens <= 13
+      ? "th"
+      : row.rank % 10 === 1
+        ? "st"
+        : row.rank % 10 === 2
+          ? "nd"
+          : row.rank % 10 === 3
+            ? "rd"
+            : "th";
+  const placement = `${row.rank}${suffix}`;
+
+  return row.tied ? `Tied for ${placement}` : placement;
 }
 
 export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
