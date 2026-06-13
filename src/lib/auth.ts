@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { UserRole } from "@prisma/client";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -108,6 +109,16 @@ export async function requireUser() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  return user;
+}
+
+export async function requireAdmin() {
+  const user = await requireUser();
+
+  if (user.role !== UserRole.ADMIN) {
+    redirect("/predictions");
   }
 
   return user;
