@@ -17,6 +17,7 @@ export async function SiteNav() {
   );
   const actions = (
     <>
+      <Link href="/">Home</Link>
       <Link href="/leaderboard">Leaderboard</Link>
       {currentUser ? <Link href={`/users/${currentUser.username}`}>My picks</Link> : null}
       {isAdmin ? <Link href="/admin">Admin</Link> : null}
