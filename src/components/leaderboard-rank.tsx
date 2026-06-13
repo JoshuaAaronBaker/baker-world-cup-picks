@@ -1,5 +1,5 @@
 const rankMedals: Record<number, string> = {
-  1: "🏆",
+  1: "🥇",
   2: "🥈",
   3: "🥉",
 };
