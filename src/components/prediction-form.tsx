@@ -24,6 +24,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
   const status = getMatchStatusLabel(match);
   const knockout = isKnockoutPhase(match.phase);
   const canViewBreakdown = locked;
+  const stateClass = status.toLowerCase().replace(/\s+/g, "-");
 
   return (
     <form className="prediction-row" action={savePrediction}>
@@ -45,24 +46,32 @@ export function PredictionForm({ match }: PredictionFormProps) {
         ) : null}
       </div>
       <div className="score-inputs" aria-label="Score prediction">
-        <input
-          aria-label={`${teamName(match, "home")} score`}
-          name="homeScore"
-          type="number"
-          min={SCORE_MIN}
-          max={SCORE_MAX}
-          defaultValue={prediction?.homeScore ?? ""}
-          disabled={disabled}
-        />
-        <input
-          aria-label={`${teamName(match, "away")} score`}
-          name="awayScore"
-          type="number"
-          min={SCORE_MIN}
-          max={SCORE_MAX}
-          defaultValue={prediction?.awayScore ?? ""}
-          disabled={disabled}
-        />
+        <label>
+          <span>{plainTeamName(match, "home")}</span>
+          <input
+            aria-label={`${teamName(match, "home")} score`}
+            name="homeScore"
+            type="number"
+            inputMode="numeric"
+            min={SCORE_MIN}
+            max={SCORE_MAX}
+            defaultValue={prediction?.homeScore ?? ""}
+            disabled={disabled}
+          />
+        </label>
+        <label>
+          <span>{plainTeamName(match, "away")}</span>
+          <input
+            aria-label={`${teamName(match, "away")} score`}
+            name="awayScore"
+            type="number"
+            inputMode="numeric"
+            min={SCORE_MIN}
+            max={SCORE_MAX}
+            defaultValue={prediction?.awayScore ?? ""}
+            disabled={disabled}
+          />
+        </label>
       </div>
       {knockout && match.homeTeam && match.awayTeam ? (
         <label className="advancer-select">
@@ -79,7 +88,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
         </label>
       ) : null}
       <div className="prediction-actions">
-        <span className="status-pill">{status}</span>
+        <span className={`status-pill status-${stateClass}`}>{status}</span>
         {canViewBreakdown ? (
           <a className="ghost-button small" href={`/matches/${match.id}`}>
             Picks

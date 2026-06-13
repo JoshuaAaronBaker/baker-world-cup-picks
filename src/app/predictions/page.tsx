@@ -62,6 +62,12 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
         <p className="progress-note">
           Predicted {progress.predicted} of {progress.available} available matches.
         </p>
+        <div className="rules-strip" aria-label="Prediction rules">
+          <span>3 pts exact score</span>
+          <span>1 pt correct result</span>
+          <span>Picks lock 5 minutes before kickoff</span>
+          <span>Knockout draws need an advancer</span>
+        </div>
         <nav className="phase-filters" aria-label="Prediction phase filters">
           {PHASE_FILTERS.map((filter) => (
             <Link

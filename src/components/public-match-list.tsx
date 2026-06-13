@@ -25,7 +25,9 @@ export function PublicMatchList({ matches }: PublicMatchListProps) {
             <span>{match.homeScore ?? "-"}</span>
             <span>{match.awayScore ?? "-"}</span>
           </div>
-          <span className="status-pill">{match.status.toLowerCase()}</span>
+          <span className={`status-pill status-${match.status.toLowerCase()}`}>
+            {match.status.toLowerCase()}
+          </span>
         </Link>
       ))}
       {matches.length === 0 ? <p>No matches today.</p> : null}
