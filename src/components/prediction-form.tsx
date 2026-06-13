@@ -38,7 +38,11 @@ export function PredictionForm({ match }: PredictionFormProps) {
     : finalWithScore
       ? "prediction-result-missed"
       : "";
-  const pointsLabel = scored ? (pointsAwarded > 0 ? `+${pointsAwarded}` : "0") : null;
+  const pointsLabel = scored
+    ? pointsAwarded > 0
+      ? `+${pointsAwarded} ${pointsAwarded === 1 ? "point" : "points"}`
+      : "0 points"
+    : null;
 
   return (
     <form className={`prediction-row ${resultClass}`} action={savePrediction}>
@@ -105,7 +109,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
       <div className="prediction-actions">
         <span className={`status-pill status-${stateClass}`}>{status}</span>
         {pointsLabel ? <span className="points-pill">{pointsLabel}</span> : null}
-        {!prediction && finalWithScore ? <span className="points-pill">0</span> : null}
+        {!prediction && finalWithScore ? <span className="points-pill">0 points</span> : null}
         {canViewBreakdown ? (
           <a className="ghost-button small" href={`/matches/${match.id}`}>
             Picks

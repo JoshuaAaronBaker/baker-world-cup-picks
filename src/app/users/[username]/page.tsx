@@ -26,7 +26,9 @@ function predictionResultClass(prediction: { pointsAwarded: number | null; exact
 
 function pointsLabel(pointsAwarded: number | null) {
   if (pointsAwarded === null) return null;
-  return pointsAwarded > 0 ? `+${pointsAwarded}` : "0";
+  return pointsAwarded > 0
+    ? `+${pointsAwarded} ${pointsAwarded === 1 ? "point" : "points"}`
+    : "0 points";
 }
 
 export default async function UserPage({ params }: UserPageProps) {
