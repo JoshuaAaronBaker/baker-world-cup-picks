@@ -20,7 +20,7 @@ const payload: FootballDataMatchesPayload = {
       matchday: 1,
       stage: "GROUP_STAGE",
       homeTeam: { id: 1, name: "Mexico", tla: "MEX" },
-      awayTeam: { id: 2, name: "South Africa", tla: "RSA" },
+      awayTeam: { id: 2, name: "Scotland", tla: "SCO" },
       score: { winner: "HOME_TEAM", fullTime: { home: 2, away: 1 } },
     },
     {
@@ -72,6 +72,7 @@ describe("football-data provider", () => {
     });
 
     const mexico = await prisma.team.findFirstOrThrow({ where: { providerId: "1" } });
+    const scotland = await prisma.team.findFirstOrThrow({ where: { providerId: "2" } });
     const finalMatch = await prisma.match.findUniqueOrThrow({ where: { providerId: "101" } });
     const timedMatch = await prisma.match.findUniqueOrThrow({ where: { providerId: "102" } });
 
@@ -79,6 +80,7 @@ describe("football-data provider", () => {
     expect(result.matchesImported).toBe(2);
     expect(mexico.name).toBe("Mexico");
     expect(mexico.flagEmoji).toBe("🇲🇽");
+    expect(scotland.flagEmoji).toBe("\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}");
     expect(finalMatch.status).toBe(MatchStatus.FINAL);
     expect(finalMatch.homeScore).toBe(2);
     expect(finalMatch.awayScore).toBe(1);

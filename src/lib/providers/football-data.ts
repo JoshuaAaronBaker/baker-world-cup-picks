@@ -52,7 +52,7 @@ const TLA_FLAG_EMOJI: Record<string, string> = {
   POR: "🇵🇹",
   QAT: "🇶🇦",
   RSA: "🇿🇦",
-  SCO: "🏴",
+  SCO: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
   SEN: "🇸🇳",
   SUI: "🇨🇭",
   SWE: "🇸🇪",
