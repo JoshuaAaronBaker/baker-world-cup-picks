@@ -12,6 +12,56 @@ import { prisma } from "@/lib/prisma";
 const FOOTBALL_DATA_PROVIDER = "football-data";
 const FOOTBALL_DATA_WC_MATCHES_URL =
   "https://api.football-data.org/v4/competitions/WC/matches?season=2026";
+const TLA_FLAG_EMOJI: Record<string, string> = {
+  ALG: "🇩🇿",
+  ARG: "🇦🇷",
+  AUS: "🇦🇺",
+  AUT: "🇦🇹",
+  BEL: "🇧🇪",
+  BIH: "🇧🇦",
+  BRA: "🇧🇷",
+  CAN: "🇨🇦",
+  CIV: "🇨🇮",
+  COD: "🇨🇩",
+  COL: "🇨🇴",
+  CPV: "🇨🇻",
+  CRO: "🇭🇷",
+  CUW: "🇨🇼",
+  CZE: "🇨🇿",
+  ECU: "🇪🇨",
+  EGY: "🇪🇬",
+  ENG: "🏴",
+  ESP: "🇪🇸",
+  FRA: "🇫🇷",
+  GER: "🇩🇪",
+  GHA: "🇬🇭",
+  HAI: "🇭🇹",
+  IRN: "🇮🇷",
+  IRQ: "🇮🇶",
+  JOR: "🇯🇴",
+  JPN: "🇯🇵",
+  KOR: "🇰🇷",
+  KSA: "🇸🇦",
+  MAR: "🇲🇦",
+  MEX: "🇲🇽",
+  NED: "🇳🇱",
+  NOR: "🇳🇴",
+  NZL: "🇳🇿",
+  PAN: "🇵🇦",
+  PAR: "🇵🇾",
+  POR: "🇵🇹",
+  QAT: "🇶🇦",
+  RSA: "🇿🇦",
+  SCO: "🏴",
+  SEN: "🇸🇳",
+  SUI: "🇨🇭",
+  SWE: "🇸🇪",
+  TUN: "🇹🇳",
+  TUR: "🇹🇷",
+  URY: "🇺🇾",
+  USA: "🇺🇸",
+  UZB: "🇺🇿",
+};
 
 type ProviderTeam = {
   id: number | null;
@@ -338,7 +388,13 @@ function getAdvancingTeamId(providerMatch: FootballDataMatch, teamByProviderId: 
 }
 
 function flagEmojiForTla(tla?: string | null) {
-  const code = tla?.slice(0, 2).toUpperCase();
+  const normalizedTla = tla?.toUpperCase();
+
+  if (normalizedTla && TLA_FLAG_EMOJI[normalizedTla]) {
+    return TLA_FLAG_EMOJI[normalizedTla];
+  }
+
+  const code = normalizedTla?.slice(0, 2);
 
   if (!code || !/^[A-Z]{2}$/.test(code)) {
     return "";

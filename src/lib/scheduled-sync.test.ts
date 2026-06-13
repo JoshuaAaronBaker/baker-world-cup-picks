@@ -61,7 +61,7 @@ describe("nightly scheduled sync", () => {
     const syncRunner = vi.fn().mockResolvedValue({ matchesImported: 1 });
 
     const result = await runNightlyScoreSync({
-      now: new Date("2026-06-14T06:30:00.000Z"),
+      now: new Date("2026-08-01T06:30:00.000Z"),
       syncRunner,
     });
 

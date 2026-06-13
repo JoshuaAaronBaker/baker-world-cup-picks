@@ -78,6 +78,7 @@ describe("football-data provider", () => {
     expect(result.teamsImported).toBe(2);
     expect(result.matchesImported).toBe(2);
     expect(mexico.name).toBe("Mexico");
+    expect(mexico.flagEmoji).toBe("🇲🇽");
     expect(finalMatch.status).toBe(MatchStatus.FINAL);
     expect(finalMatch.homeScore).toBe(2);
     expect(finalMatch.awayScore).toBe(1);
