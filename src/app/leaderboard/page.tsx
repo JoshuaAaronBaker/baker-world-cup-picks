@@ -1,11 +1,17 @@
 import Link from "next/link";
+import { PublicMatchList } from "@/components/public-match-list";
 import { getCurrentUser } from "@/lib/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
+import { getPublicTodaysMatches } from "@/lib/public-matches";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardPage() {
-  const [leaderboard, currentUser] = await Promise.all([getLeaderboard(), getCurrentUser()]);
+  const [leaderboard, currentUser, matches] = await Promise.all([
+    getLeaderboard(),
+    getCurrentUser(),
+    getPublicTodaysMatches(6),
+  ]);
 
   return (
     <main className="app-shell">
@@ -39,6 +45,15 @@ export default async function LeaderboardPage() {
             <li>No players yet.</li>
           )}
         </ol>
+        {!currentUser ? (
+          <section className="public-upcoming" aria-label="Today's matches">
+            <div className="section-heading">
+              <p className="eyebrow">Today&apos;s matches</p>
+              <h2>Make your picks</h2>
+            </div>
+            <PublicMatchList matches={matches} />
+          </section>
+        ) : null}
       </section>
     </main>
   );

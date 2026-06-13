@@ -1,6 +1,6 @@
 import { MatchPhase, MatchStatus, PrismaClient } from "@prisma/client";
 import { beforeEach, describe, expect, it } from "vitest";
-import { getLeaderboard } from "@/lib/leaderboard";
+import { rankLeaderboardUsers } from "@/lib/leaderboard";
 import { finalizeMatchAndScore, recalculateMatchScores } from "@/lib/score-matches";
 
 const prisma = new PrismaClient();
@@ -38,12 +38,40 @@ async function createTeam(tournamentId: string, name: string, countryCode: strin
 }
 
 beforeEach(async () => {
-  await prisma.auditLog.deleteMany();
-  await prisma.prediction.deleteMany();
-  await prisma.match.deleteMany();
-  await prisma.team.deleteMany();
-  await prisma.tournament.deleteMany();
-  await prisma.user.deleteMany();
+  const testTournaments = await prisma.tournament.findMany({
+    where: { slug: { startsWith: "test-" } },
+    select: { id: true },
+  });
+  const testUsers = await prisma.user.findMany({
+    where: {
+      normalizedUsername: {
+        in: [
+          "exact_user",
+          "result_user",
+          "wrong_user",
+          "right_advancer",
+          "wrong_advancer",
+          "cancelled_user",
+          "first_user",
+          "tied_user",
+          "lower_user",
+        ],
+      },
+    },
+    select: { id: true },
+  });
+  const tournamentIds = testTournaments.map((tournament) => tournament.id);
+  const userIds = testUsers.map((user) => user.id);
+
+  await prisma.prediction.deleteMany({
+    where: {
+      OR: [{ userId: { in: userIds } }, { match: { tournamentId: { in: tournamentIds } } }],
+    },
+  });
+  await prisma.match.deleteMany({ where: { tournamentId: { in: tournamentIds } } });
+  await prisma.team.deleteMany({ where: { tournamentId: { in: tournamentIds } } });
+  await prisma.tournament.deleteMany({ where: { id: { in: tournamentIds } } });
+  await prisma.user.deleteMany({ where: { id: { in: userIds } } });
 });
 
 describe("match scoring persistence", () => {
@@ -77,6 +105,7 @@ describe("match scoring persistence", () => {
     await finalizeMatchAndScore({ matchId: match.id, homeScore: 2, awayScore: 1 });
 
     const predictions = await prisma.prediction.findMany({
+      where: { matchId: match.id },
       orderBy: { user: { username: "asc" } },
       select: {
         pointsAwarded: true,
@@ -156,9 +185,13 @@ describe("match scoring persistence", () => {
       advancingTeamId: home.id,
     });
 
-    const leaderboard = await getLeaderboard();
+    const predictions = await prisma.prediction.findMany({
+      where: { matchId: match.id },
+      include: { user: true },
+      orderBy: { user: { username: "asc" } },
+    });
 
-    expect(leaderboard.map((row) => [row.username, row.points])).toEqual([
+    expect(predictions.map((prediction) => [prediction.user.username, prediction.pointsAwarded])).toEqual([
       ["right_advancer", 1],
       ["wrong_advancer", 0],
     ]);
@@ -200,7 +233,9 @@ describe("match scoring persistence", () => {
     });
     await recalculateMatchScores(match.id);
 
-    const prediction = await prisma.prediction.findFirstOrThrow();
+    const prediction = await prisma.prediction.findFirstOrThrow({
+      where: { matchId: match.id },
+    });
     expect(prediction.pointsAwarded).toBeNull();
     expect(prediction.exactScore).toBe(false);
     expect(prediction.correctResult).toBe(false);
@@ -235,7 +270,11 @@ describe("match scoring persistence", () => {
 
     await finalizeMatchAndScore({ matchId: match.id, homeScore: 2, awayScore: 0 });
 
-    const initialLeaderboard = await getLeaderboard();
+    const usersAfterInitialScore = await prisma.user.findMany({
+      where: { id: { in: [firstUser.id, tiedUser.id, lowerUser.id] } },
+      include: { predictions: true },
+    });
+    const initialLeaderboard = rankLeaderboardUsers(usersAfterInitialScore);
     const tiedLeaders = initialLeaderboard
       .filter((row) => row.rank === 1)
       .map((row) => row.username)
@@ -251,7 +290,11 @@ describe("match scoring persistence", () => {
 
     await finalizeMatchAndScore({ matchId: match.id, homeScore: 1, awayScore: 0 });
 
-    const recalculatedLeaderboard = await getLeaderboard();
+    const usersAfterRecalculation = await prisma.user.findMany({
+      where: { id: { in: [firstUser.id, tiedUser.id, lowerUser.id] } },
+      include: { predictions: true },
+    });
+    const recalculatedLeaderboard = rankLeaderboardUsers(usersAfterRecalculation);
     expect(recalculatedLeaderboard.find((row) => row.username === "lower_user")).toMatchObject({
       rank: 1,
       points: 3,
