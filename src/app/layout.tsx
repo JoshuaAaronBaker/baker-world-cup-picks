@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./styles.css";
 
 export const metadata: Metadata = {
-  title: "Baker's World Cup Picks",
+  title: "World Cup '26 Picks by Baker",
   description: "Predict World Cup scores and climb the leaderboard.",
 };
 

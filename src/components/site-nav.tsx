@@ -12,7 +12,7 @@ export async function SiteNav() {
     <nav className="topbar" aria-label="Primary navigation">
       <Link href="/" className="brand">
         <span className="brand-mark">B</span>
-        <span>Baker&apos;s World Cup Picks</span>
+        <span>World Cup &apos;26 Picks by Baker</span>
       </Link>
       <div className="nav-actions">
         <Link href="/leaderboard">Leaderboard</Link>
