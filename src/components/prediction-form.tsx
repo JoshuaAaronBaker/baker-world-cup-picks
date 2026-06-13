@@ -36,7 +36,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
         ? "prediction-result-winner"
         : "prediction-result-missed"
     : finalWithScore
-      ? "prediction-result-missed"
+      ? "prediction-result-missed-pick"
       : "";
   const pointsLabel = scored
     ? pointsAwarded > 0

@@ -53,6 +53,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredM
       return left.createdAt.getTime() - right.createdAt.getTime();
     });
 
+  let currentRank = 0;
   const ranked = sortedUsers.map((user, index, allUsers) => {
     const previous = allUsers[index - 1];
     const tiedWithPrevious =
@@ -61,8 +62,12 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredM
       previous.exactScores === user.exactScores &&
       previous.correctResults === user.correctResults;
 
+    if (!tiedWithPrevious) {
+      currentRank += 1;
+    }
+
     return {
-      rank: tiedWithPrevious ? 0 : index + 1,
+      rank: currentRank,
       username: user.username,
       points: user.points,
       exactScores: user.exactScores,
@@ -71,12 +76,6 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredM
       tied: false,
     };
   });
-
-  for (let index = 0; index < ranked.length; index += 1) {
-    if (ranked[index].rank === 0) {
-      ranked[index].rank = ranked[index - 1].rank;
-    }
-  }
 
   const rankCounts = new Map<number, number>();
 
@@ -106,7 +105,7 @@ export function formatLeaderboardPlacement(row?: Pick<LeaderboardRow, "rank" | "
             : "th";
   const placement = `${row.rank}${suffix}`;
   const medal = rankMedals[row.rank];
-  const label = row.tied ? `Tied for ${placement}` : placement;
+  const label = row.tied ? `Tied for ${placement}` : `${placement} place`;
 
   return medal ? `${medal} ${label}` : label;
 }

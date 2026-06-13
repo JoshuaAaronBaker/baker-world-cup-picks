@@ -60,7 +60,7 @@ describe("getLeaderboard", () => {
 
     expect(formatLeaderboardPlacement(rows[0])).toBe("🥇 Tied for 1st");
     expect(formatLeaderboardPlacement(rows[1])).toBe("🥇 Tied for 1st");
-    expect(formatLeaderboardPlacement(rows[2])).toBe("🥉 3rd");
+    expect(formatLeaderboardPlacement(rows[2])).toBe("🥈 2nd place");
   });
 
   it("excludes admin accounts even when they are not hidden", async () => {
