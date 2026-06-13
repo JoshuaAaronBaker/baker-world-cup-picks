@@ -394,6 +394,21 @@ a {
   box-shadow: 0 10px 28px rgba(23, 33, 27, 0.06);
 }
 
+.prediction-result-exact {
+  border-color: rgba(23, 114, 69, 0.42);
+  background: #eef8f1;
+}
+
+.prediction-result-winner {
+  border-color: rgba(207, 157, 28, 0.5);
+  background: #fff8df;
+}
+
+.prediction-result-missed {
+  border-color: rgba(191, 66, 66, 0.46);
+  background: #fff0ef;
+}
+
 .match-time {
   margin: 0 0 8px;
   color: var(--muted);
@@ -455,6 +470,18 @@ a {
   padding: 7px 10px;
   background: #eef7f1;
   color: var(--grass-dark);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.points-pill {
+  min-width: 58px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--ink);
   font-size: 0.8rem;
   font-weight: 900;
   text-align: center;
@@ -539,7 +566,7 @@ a {
 
 .prediction-actions {
   display: grid;
-  grid-template-columns: repeat(3, max-content);
+  grid-template-columns: repeat(4, max-content);
   align-items: center;
   gap: 10px;
 }
@@ -560,6 +587,33 @@ a {
   color: var(--muted);
   font-size: 0.92rem;
   font-weight: 800;
+}
+
+.points-counter {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  justify-content: start;
+  gap: 10px;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  margin-top: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 24px rgba(23, 33, 27, 0.06);
+}
+
+.points-counter span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.points-counter strong {
+  color: var(--grass-dark);
+  font-size: 1.3rem;
+  font-weight: 950;
 }
 
 .rules-note {
@@ -683,6 +737,21 @@ a {
   border-radius: 8px;
   background: var(--panel);
   padding: 14px;
+}
+
+.table-row.prediction-result-exact {
+  border-color: rgba(23, 114, 69, 0.42);
+  background: #eef8f1;
+}
+
+.table-row.prediction-result-winner {
+  border-color: rgba(207, 157, 28, 0.5);
+  background: #fff8df;
+}
+
+.table-row.prediction-result-missed {
+  border-color: rgba(191, 66, 66, 0.46);
+  background: #fff0ef;
 }
 
 .table-row span {

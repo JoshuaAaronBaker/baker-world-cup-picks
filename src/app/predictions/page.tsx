@@ -10,6 +10,7 @@ import {
   PHASE_FILTERS,
   parsePhaseFilter,
 } from "@/lib/matches";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -36,10 +37,21 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
   const user = await requireUser();
   const params = await searchParams;
   const phase = parsePhaseFilter(params?.phase);
-  const matches = await getPredictionMatches(user.id, phase);
+  const [matches, points] = await Promise.all([
+    getPredictionMatches(user.id, phase),
+    prisma.prediction.aggregate({
+      where: {
+        userId: user.id,
+        pointsAwarded: { not: null },
+        match: { tournament: { active: true } },
+      },
+      _sum: { pointsAwarded: true },
+    }),
+  ]);
   const progress = getPredictionProgress(matches);
   const groupedMatches = groupMatchesByDate(matches);
   const activePhase = phase ?? "all";
+  const totalPoints = points._sum.pointsAwarded ?? 0;
 
   return (
     <main className="app-shell">
@@ -52,6 +64,10 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
         <p className="progress-note">
           Predicted {progress.predicted} of {progress.available} available matches.
         </p>
+        <div className="points-counter" aria-label="Total points">
+          <span>Total points</span>
+          <strong>{totalPoints}</strong>
+        </div>
         <div className="rules-note" aria-label="Prediction rules">
           <strong>Scoring</strong>
           <span>3 points for an exact score, 1 point for the right result.</span>

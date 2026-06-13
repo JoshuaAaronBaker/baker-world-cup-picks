@@ -16,6 +16,13 @@ type UserPageProps = {
   }>;
 };
 
+function predictionResultClass(prediction: { pointsAwarded: number | null; exactScore: boolean; correctResult: boolean }) {
+  if (prediction.pointsAwarded === null) return "";
+  if (prediction.exactScore) return "prediction-result-exact";
+  if (prediction.correctResult) return "prediction-result-winner";
+  return "prediction-result-missed";
+}
+
 export default async function UserPage({ params }: UserPageProps) {
   const viewer = await requireUser();
   const { username } = await params;
@@ -48,6 +55,10 @@ export default async function UserPage({ params }: UserPageProps) {
       match: prediction.match,
     }),
   );
+  const totalPoints = profileUser.predictions.reduce(
+    (total, prediction) => total + (prediction.pointsAwarded ?? 0),
+    0,
+  );
 
   return (
     <main className="app-shell">
@@ -57,9 +68,13 @@ export default async function UserPage({ params }: UserPageProps) {
           <p className="eyebrow">{profileUser.id === viewer.id ? "My picks" : "Player profile"}</p>
           <h1>{profileUser.username}</h1>
         </div>
+        <div className="points-counter" aria-label="Total points">
+          <span>Total points</span>
+          <strong>{totalPoints}</strong>
+        </div>
         <div className="table-list">
           {visiblePredictions.map((prediction) => (
-            <article className="table-row" key={prediction.id}>
+            <article className={`table-row ${predictionResultClass(prediction)}`} key={prediction.id}>
               {canViewPredictionBreakdown({ viewerUserId: viewer.id, match: prediction.match }) ? (
                 <Link href={`/matches/${prediction.match.id}`}>
                   {teamName(prediction.match, "home")} vs {teamName(prediction.match, "away")}
