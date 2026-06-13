@@ -55,7 +55,18 @@ export default async function LeaderboardPage() {
                     </small>
                   </span>
                 )}
-                <strong>{player.points} pts</strong>
+                <div className="leaderboard-actions">
+                  <strong>{player.points} pts</strong>
+                  {currentUser ? (
+                    <Link className="ghost-button small" href={`/users/${player.username}`}>
+                      See picks
+                    </Link>
+                  ) : (
+                    <Link className="ghost-button small" href="/signup?next=/leaderboard">
+                      See picks
+                    </Link>
+                  )}
+                </div>
               </li>
             ))
           ) : (

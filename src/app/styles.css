@@ -282,6 +282,12 @@ a {
   white-space: nowrap;
 }
 
+.leaderboard-actions {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
 .rank {
   display: grid;
   width: 32px;
@@ -1042,6 +1048,10 @@ a {
 
   .leaderboard-list li {
     grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
+
+  .leaderboard-actions {
+    justify-items: stretch;
   }
 
   .score-pick,
