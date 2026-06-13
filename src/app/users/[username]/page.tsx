@@ -37,7 +37,7 @@ export default async function UserPage({ params }: UserPageProps) {
     },
   });
 
-  if (!profileUser || profileUser.hideFromLeaderboard) {
+  if (!profileUser || (profileUser.hideFromLeaderboard && profileUser.id !== viewer.id)) {
     notFound();
   }
 
@@ -54,7 +54,7 @@ export default async function UserPage({ params }: UserPageProps) {
       <SiteNav />
       <section className="game-grid">
         <div className="section-heading">
-          <p className="eyebrow">Player profile</p>
+          <p className="eyebrow">{profileUser.id === viewer.id ? "My picks" : "Player profile"}</p>
           <h1>{profileUser.username}</h1>
         </div>
         <div className="table-list">

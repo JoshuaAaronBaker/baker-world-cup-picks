@@ -1,12 +1,20 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { PublicMatchList } from "@/components/public-match-list";
 import { SiteNav } from "@/components/site-nav";
+import { getCurrentUser } from "@/lib/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
 import { getPublicTodaysMatches } from "@/lib/public-matches";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser) {
+    redirect("/predictions");
+  }
+
   const [leaderboard, matches] = await Promise.all([getLeaderboard(4), getPublicTodaysMatches(3)]);
 
   return (

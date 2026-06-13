@@ -562,20 +562,20 @@ a {
   font-weight: 800;
 }
 
-.rules-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 14px 0 4px;
+.rules-note {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-.rules-strip span {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  padding: 7px 10px;
-  color: var(--muted);
-  font-size: 0.82rem;
+.rules-note strong {
+  color: var(--ink);
   font-weight: 900;
 }
 

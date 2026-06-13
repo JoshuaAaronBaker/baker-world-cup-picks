@@ -16,7 +16,7 @@ export async function SiteNav() {
       </Link>
       <div className="nav-actions">
         <Link href="/leaderboard">Leaderboard</Link>
-        {signedIn ? <Link href="/predictions">My picks</Link> : null}
+        {currentUser ? <Link href={`/users/${currentUser.username}`}>My picks</Link> : null}
         {isAdmin ? <Link href="/admin">Admin</Link> : null}
         {signedIn ? (
           <form action={logOut}>
