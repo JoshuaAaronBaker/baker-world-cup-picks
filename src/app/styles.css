@@ -103,6 +103,29 @@ a {
   white-space: nowrap;
 }
 
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  grid-template-rows: repeat(3, 2px);
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 9px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
 .button,
 .ghost-button {
   min-height: 42px;
@@ -884,8 +907,8 @@ a {
 
   .topbar {
     display: grid;
-    grid-template-columns: 1fr;
-    align-items: flex-start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 10px;
     padding-bottom: 20px;
   }
@@ -895,16 +918,42 @@ a {
   }
 
   .brand span:last-child {
-    overflow: visible;
-    text-overflow: clip;
-    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+    justify-self: end;
+  }
+
+  .topbar.menu-open .menu-toggle {
+    border-color: var(--grass);
+    box-shadow: 0 0 0 3px rgba(23, 114, 69, 0.12);
   }
 
   .nav-actions {
+    display: none;
+    grid-column: 1 / -1;
     justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 8px 10px;
+    gap: 8px;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
     font-size: 0.92rem;
+  }
+
+  .topbar.menu-open .nav-actions {
+    display: grid;
+  }
+
+  .nav-actions a:not(.button),
+  .nav-actions form,
+  .nav-actions button {
+    width: 100%;
   }
 
   .hero {
