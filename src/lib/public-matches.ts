@@ -1,17 +1,9 @@
 import { MatchStatus } from "@prisma/client";
+import { formatAppDateTime, getAppTodayRange } from "@/lib/datetime";
 import { prisma } from "@/lib/prisma";
 
-function getLocalTodayRange() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const end = new Date(start);
-  end.setDate(start.getDate() + 1);
-
-  return { start, end };
-}
-
 export async function getPublicTodaysMatches(limit = 6) {
-  const { start, end } = getLocalTodayRange();
+  const { start, end } = getAppTodayRange();
 
   return prisma.match.findMany({
     where: {
@@ -29,11 +21,5 @@ export async function getPublicTodaysMatches(limit = 6) {
 }
 
 export function formatPublicMatchTime(kickoffAt: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(kickoffAt);
+  return formatAppDateTime(kickoffAt);
 }

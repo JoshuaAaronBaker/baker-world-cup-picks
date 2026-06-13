@@ -1,5 +1,6 @@
 import type { Match, Prediction, Team } from "@prisma/client";
 import { MatchPhase, MatchStatus } from "@prisma/client";
+import { formatAppDate, formatAppDateTime } from "@/lib/datetime";
 import { prisma } from "@/lib/prisma";
 
 export const SCORE_MIN = 0;
@@ -100,21 +101,11 @@ export function formatPhase(phase: MatchPhase) {
 }
 
 export function formatMatchTime(kickoffAt: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(kickoffAt);
+  return formatAppDateTime(kickoffAt);
 }
 
 export function formatMatchDate(kickoffAt: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(kickoffAt);
+  return formatAppDate(kickoffAt);
 }
 
 export function getLockCountdownLabel(

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { formatAppDateTimeLong } from "@/lib/datetime";
 
 export type PublicSyncStatus = {
   lastSuccessfulSyncAt: Date | null;
@@ -15,7 +16,7 @@ export function formatSyncStatus(syncRun: { finishedAt: Date | null } | null): P
 
   return {
     lastSuccessfulSyncAt: syncRun.finishedAt,
-    label: `Scores last updated ${syncRun.finishedAt.toLocaleString()}.`,
+    label: `Scores last updated ${formatAppDateTimeLong(syncRun.finishedAt)}.`,
   };
 }
 

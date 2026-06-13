@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/actions";
 import { SiteNav } from "@/components/site-nav";
 import { requireAdmin } from "@/lib/auth";
+import { formatAppDateTimeLong } from "@/lib/datetime";
 import { teamName } from "@/lib/display";
 import { formatPhase } from "@/lib/matches";
 import { prisma } from "@/lib/prisma";
@@ -88,7 +89,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                   <strong>{syncRun.status}</strong>
                   <span>{syncRun.provider}</span>
                   <span>
-                    {syncRun.finishedAt?.toLocaleString() ?? syncRun.startedAt.toLocaleString()} ·{" "}
+                    {formatAppDateTimeLong(syncRun.finishedAt ?? syncRun.startedAt)} ·{" "}
                     {syncRun.message ?? "Running"}
                   </span>
                 </article>
@@ -211,7 +212,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <article className="table-row" key={log.id}>
                 <strong>{log.action}</strong>
                 <span>{log.actor?.username ?? "system"}</span>
-                <span>{log.createdAt.toLocaleString()}</span>
+                <span>{formatAppDateTimeLong(log.createdAt)}</span>
               </article>
             ))}
           </div>
