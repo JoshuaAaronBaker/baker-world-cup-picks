@@ -3,14 +3,16 @@ import { PublicMatchList } from "@/components/public-match-list";
 import { getCurrentUser } from "@/lib/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
 import { getPublicTodaysMatches } from "@/lib/public-matches";
+import { getPublicSyncStatus } from "@/lib/sync-status";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardPage() {
-  const [leaderboard, currentUser, matches] = await Promise.all([
+  const [leaderboard, currentUser, matches, syncStatus] = await Promise.all([
     getLeaderboard(),
     getCurrentUser(),
     getPublicTodaysMatches(6),
+    getPublicSyncStatus(),
   ]);
 
   return (
@@ -25,6 +27,7 @@ export default async function LeaderboardPage() {
         <div className="section-heading">
           <p className="eyebrow">Public leaderboard</p>
           <h1>Rankings</h1>
+          <p className="form-note">{syncStatus.label}</p>
         </div>
         <ol className="leaderboard-list leaderboard-page-list">
           {leaderboard.length ? (
