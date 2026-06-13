@@ -45,6 +45,46 @@ export function isMatchPredictable(match: Pick<MatchWithPrediction, "homeTeam" |
   return Boolean(match.homeTeam && match.awayTeam);
 }
 
+export function isKnockoutPhase(phase: MatchPhase) {
+  return phase !== MatchPhase.GROUP_STAGE;
+}
+
+export function getImpliedAdvancingTeamId(
+  match: Pick<MatchWithPrediction, "homeTeamId" | "awayTeamId">,
+  homeScore: number,
+  awayScore: number,
+) {
+  if (homeScore > awayScore) return match.homeTeamId;
+  if (awayScore > homeScore) return match.awayTeamId;
+  return null;
+}
+
+export function getPredictedAdvancingTeamId(
+  match: Pick<MatchWithPrediction, "phase" | "homeTeamId" | "awayTeamId">,
+  homeScore: number,
+  awayScore: number,
+  selectedAdvancingTeamId?: string | null,
+) {
+  if (!isKnockoutPhase(match.phase)) {
+    return null;
+  }
+
+  const impliedAdvancer = getImpliedAdvancingTeamId(match, homeScore, awayScore);
+
+  if (impliedAdvancer) {
+    return impliedAdvancer;
+  }
+
+  if (
+    selectedAdvancingTeamId &&
+    (selectedAdvancingTeamId === match.homeTeamId || selectedAdvancingTeamId === match.awayTeamId)
+  ) {
+    return selectedAdvancingTeamId;
+  }
+
+  return null;
+}
+
 export function formatPhase(phase: MatchPhase) {
   const labels: Record<MatchPhase, string> = {
     GROUP_STAGE: "Group stage",

@@ -2,7 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
-import { isMatchLocked, isMatchPredictable, validateScoreValue } from "@/lib/matches";
+import {
+  getPredictedAdvancingTeamId,
+  isKnockoutPhase,
+  isMatchLocked,
+  isMatchPredictable,
+  validateScoreValue,
+} from "@/lib/matches";
 import { prisma } from "@/lib/prisma";
 
 export async function savePrediction(formData: FormData) {
@@ -39,6 +45,18 @@ export async function savePrediction(formData: FormData) {
     throw new Error("Enter scores from 0 to 20.");
   }
 
+  const selectedAdvancingTeamId = formData.get("predictedAdvancingTeamId");
+  const predictedAdvancingTeamId = getPredictedAdvancingTeamId(
+    match,
+    homeScore,
+    awayScore,
+    typeof selectedAdvancingTeamId === "string" ? selectedAdvancingTeamId : null,
+  );
+
+  if (isKnockoutPhase(match.phase) && homeScore === awayScore && !predictedAdvancingTeamId) {
+    throw new Error("Pick who advances when a knockout prediction is tied.");
+  }
+
   await prisma.prediction.upsert({
     where: {
       userId_matchId: {
@@ -49,6 +67,7 @@ export async function savePrediction(formData: FormData) {
     update: {
       homeScore,
       awayScore,
+      predictedAdvancingTeamId,
       pointsAwarded: null,
       exactScore: false,
       correctResult: false,
@@ -59,6 +78,7 @@ export async function savePrediction(formData: FormData) {
       matchId,
       homeScore,
       awayScore,
+      predictedAdvancingTeamId,
       status: "VALID",
     },
   });

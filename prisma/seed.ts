@@ -125,6 +125,21 @@ async function main() {
     },
   });
 
+  await prisma.match.upsert({
+    where: { providerId: "seed-knockout-known-1" },
+    update: {},
+    create: {
+      tournamentId: tournament.id,
+      providerId: "seed-knockout-known-1",
+      phase: MatchPhase.ROUND_OF_16,
+      status: MatchStatus.SCHEDULED,
+      kickoffAt: new Date("2026-07-04T23:00:00.000Z"),
+      homeTeamId: teamByCode.AR.id,
+      awayTeamId: teamByCode.ES.id,
+      latestProviderPayload: { source: "seed" },
+    },
+  });
+
   const predictionInputs = [
     [users[0].id, 2, 1, 3, true, true],
     [users[1].id, 1, 0, 1, false, true],
