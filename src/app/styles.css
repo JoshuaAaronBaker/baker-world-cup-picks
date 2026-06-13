@@ -406,6 +406,8 @@ a {
 }
 
 .score-pick {
+  display: grid;
+  grid-template-columns: 38px auto 38px;
   gap: 8px;
 }
 
@@ -417,6 +419,16 @@ a {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fbfdfa;
+  font-weight: 900;
+}
+
+.score-pick .score-separator,
+.score-inputs .score-separator {
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
   font-weight: 900;
 }
 
@@ -456,8 +468,9 @@ a {
 
 .score-inputs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(66px, 1fr));
+  grid-template-columns: 46px auto 46px;
   gap: 8px;
+  align-items: end;
 }
 
 .score-inputs input {
@@ -470,6 +483,7 @@ a {
   font-size: 1.1rem;
   font-weight: 900;
   text-align: center;
+  padding: 0;
 }
 
 .score-inputs input:focus {
@@ -830,7 +844,7 @@ a {
   }
 
   .score-inputs {
-    grid-template-columns: repeat(2, 46px);
+    grid-template-columns: 46px auto 46px;
     justify-content: center;
   }
 

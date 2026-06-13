@@ -33,6 +33,9 @@ export function PublicMatchList({ matches }: PublicMatchListProps) {
             <span>{teamCode(match, "home")}</span>
             <div className="score-pick" aria-label="Score">
               <span>{match.homeScore ?? "-"}</span>
+              <span className="score-separator" aria-hidden="true">
+                -
+              </span>
               <span>{match.awayScore ?? "-"}</span>
             </div>
             <span>{teamCode(match, "away")}</span>

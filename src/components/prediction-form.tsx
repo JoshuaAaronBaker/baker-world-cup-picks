@@ -59,6 +59,9 @@ export function PredictionForm({ match }: PredictionFormProps) {
             defaultValue={prediction?.homeScore ?? ""}
             disabled={disabled}
           />
+          <span className="score-separator" aria-hidden="true">
+            -
+          </span>
           <input
             aria-label={`${teamName(match, "away")} score`}
             name="awayScore"
