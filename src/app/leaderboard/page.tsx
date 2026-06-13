@@ -43,14 +43,14 @@ export default async function LeaderboardPage() {
                   <Link className="username username-link" href={`/users/${player.username}`}>
                     {player.username}
                     <small>
-                      {player.correctResults}/{player.scoredPicks} right · {player.exactScores} exact
+                      {player.correctResults}/{player.scoredPicks} correct · {player.exactScores} exact
                     </small>
                   </Link>
                 ) : (
                   <span className="username">
                     {player.username}
                     <small>
-                      {player.correctResults}/{player.scoredPicks} right · {player.exactScores} exact
+                      {player.correctResults}/{player.scoredPicks} correct · {player.exactScores} exact
                     </small>
                   </span>
                 )}
