@@ -34,6 +34,7 @@ export default async function Home() {
           <span>Baker&apos;s World Cup Picks</span>
         </Link>
         <div className="nav-actions">
+          <Link href="/leaderboard">Leaderboard</Link>
           <Link href="/login">Log in</Link>
           <Link href="/signup" className="button small">
             Sign up
