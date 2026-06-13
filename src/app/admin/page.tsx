@@ -14,14 +14,21 @@ import { teamName } from "@/lib/display";
 import { formatPhase } from "@/lib/matches";
 import { prisma } from "@/lib/prisma";
 
+type AdminPageProps = {
+  searchParams?: Promise<{
+    sync?: string;
+  }>;
+};
+
 function datetimeLocalValue(date: Date) {
   const offset = date.getTimezoneOffset();
   const local = new Date(date.getTime() - offset * 60_000);
   return local.toISOString().slice(0, 16);
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: AdminPageProps) {
   await requireAdmin();
+  const params = await searchParams;
   const [matches, teams, users, auditLogs, syncRuns] = await Promise.all([
     prisma.match.findMany({
       where: { tournament: { active: true } },
@@ -64,6 +71,12 @@ export default async function AdminPage() {
           <p className="eyebrow">Admin</p>
           <h1>Match control</h1>
         </div>
+        {params?.sync === "success" ? (
+          <p className="form-success">football-data sync finished successfully.</p>
+        ) : null}
+        {params?.sync === "failed" ? (
+          <p className="form-error">football-data sync failed. Check the provider sync table below.</p>
+        ) : null}
         <div className="admin-actions">
           <form action={syncFootballDataAction}>
             <button className="button" type="submit">

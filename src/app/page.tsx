@@ -50,9 +50,14 @@ export default async function Home() {
           </div>
           <ol className="leaderboard-list">
             {leaderboard.length ? leaderboard.map((player) => (
-              <li key={player.username}>
+              <li className={player.rank <= 3 ? `top-rank rank-${player.rank}` : ""} key={player.username}>
                 <span className="rank">{player.rank}</span>
-                <span className="username">{player.username}</span>
+                <span className="username">
+                  {player.username}
+                  <small>
+                    {player.exactScores} exact · {player.correctResults} results
+                  </small>
+                </span>
                 <strong>{player.points} pts</strong>
               </li>
             )) : <li>No picks yet. Be the first on the table.</li>}

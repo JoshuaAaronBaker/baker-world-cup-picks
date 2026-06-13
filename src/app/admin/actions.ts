@@ -2,6 +2,7 @@
 
 import { MatchStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import {
   recalculateAllAdmin,
@@ -88,13 +89,19 @@ export async function recalculateAllAction() {
 
 export async function syncFootballDataAction() {
   const admin = await requireAdmin();
-  await syncFootballDataWorldCup({ actorId: admin.id });
+  try {
+    await syncFootballDataWorldCup({ actorId: admin.id });
 
-  revalidatePath("/");
-  revalidatePath("/admin");
-  revalidatePath("/leaderboard");
-  revalidatePath("/matches");
-  revalidatePath("/predictions");
+    revalidatePath("/");
+    revalidatePath("/admin");
+    revalidatePath("/leaderboard");
+    revalidatePath("/matches");
+    revalidatePath("/predictions");
+  } catch {
+    redirect("/admin?sync=failed");
+  }
+
+  redirect("/admin?sync=success");
 }
 
 export async function updateUserAction(formData: FormData) {

@@ -15,6 +15,16 @@ function getFormValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
+function getSafeRedirect(formData: FormData) {
+  const redirectTo = getFormValue(formData, "redirectTo");
+
+  if (!redirectTo.startsWith("/") || redirectTo.startsWith("//")) {
+    return "/predictions";
+  }
+
+  return redirectTo;
+}
+
 export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
   const username = getFormValue(formData, "username").trim();
   const password = getFormValue(formData, "password");
@@ -49,7 +59,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   });
 
   await createSession(user.id);
-  redirect("/predictions");
+  redirect(getSafeRedirect(formData));
 }
 
 export async function logIn(_: AuthState, formData: FormData): Promise<AuthState> {
@@ -72,7 +82,7 @@ export async function logIn(_: AuthState, formData: FormData): Promise<AuthState
   }
 
   await createSession(user.id);
-  redirect("/predictions");
+  redirect(getSafeRedirect(formData));
 }
 
 export async function logOut() {

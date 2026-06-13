@@ -33,14 +33,30 @@ export default async function LeaderboardPage() {
         <ol className="leaderboard-list leaderboard-page-list">
           {leaderboard.length ? (
             leaderboard.map((player) => (
-              <li key={player.username}>
+              <li
+                className={[
+                  player.rank <= 3 ? `top-rank rank-${player.rank}` : "",
+                  currentUser?.username === player.username ? "current-user-row" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={player.username}
+              >
                 <span className="rank">{player.rank}</span>
                 {currentUser ? (
                   <Link className="username username-link" href={`/users/${player.username}`}>
                     {player.username}
+                    <small>
+                      {player.exactScores} exact · {player.correctResults} results
+                    </small>
                   </Link>
                 ) : (
-                  <span className="username">{player.username}</span>
+                  <span className="username">
+                    {player.username}
+                    <small>
+                      {player.exactScores} exact · {player.correctResults} results
+                    </small>
+                  </span>
                 )}
                 <strong>{player.points} pts</strong>
               </li>

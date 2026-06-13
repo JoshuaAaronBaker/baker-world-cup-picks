@@ -5,14 +5,16 @@ import { logIn, signUp } from "@/app/auth/actions";
 
 type AuthFormProps = {
   mode: "login" | "signup";
+  redirectTo?: string;
 };
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode, redirectTo }: AuthFormProps) {
   const action = mode === "login" ? logIn : signUp;
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
     <form className="auth-form" action={formAction}>
+      {redirectTo ? <input type="hidden" name="redirectTo" value={redirectTo} /> : null}
       <label>
         Username
         <input
