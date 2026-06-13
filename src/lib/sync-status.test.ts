@@ -5,7 +5,7 @@ describe("sync status", () => {
   it("shows a neutral public label before any successful sync", () => {
     expect(formatSyncStatus(null)).toEqual({
       lastSuccessfulSyncAt: null,
-      label: "Scores update nightly after match days.",
+      label: "Scores update every 20 minutes on match days.",
     });
   });
 

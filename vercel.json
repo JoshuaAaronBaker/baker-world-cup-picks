@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/nightly-sync",
-      "schedule": "30 6 * * *"
+      "schedule": "*/20 * * * *"
     }
   ]
 }

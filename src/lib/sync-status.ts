@@ -10,7 +10,7 @@ export function formatSyncStatus(syncRun: { finishedAt: Date | null } | null): P
   if (!syncRun?.finishedAt) {
     return {
       lastSuccessfulSyncAt: null,
-      label: "Scores update nightly after match days.",
+      label: "Scores update every 20 minutes on match days.",
     };
   }
 

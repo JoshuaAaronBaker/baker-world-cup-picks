@@ -28,8 +28,8 @@ export default async function Home() {
           <h1>Pick the scores. Watch the table move.</h1>
           <p>
             Predict each match before it locks, get 3 points for an exact score
-            and 1 for the right result, then see who sits top after nightly
-            updates.
+            and 1 for the right result, then see who rises to the top as match-day
+            updates come in.
           </p>
           <div className="hero-actions">
             <Link href="/signup" className="button">
