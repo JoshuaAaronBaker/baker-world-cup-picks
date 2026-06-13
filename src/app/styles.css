@@ -339,7 +339,8 @@ a {
   transform: translateY(-1px);
 }
 
-.public-pick-preview {
+.public-pick-preview,
+.prediction-pick-preview {
   display: grid;
   grid-template-columns: minmax(54px, 1fr) auto minmax(54px, 1fr);
   gap: 8px;
@@ -350,7 +351,8 @@ a {
   text-align: center;
 }
 
-.public-pick-preview > span {
+.public-pick-preview > span,
+.prediction-pick-preview > span {
   max-width: 90px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -458,24 +460,8 @@ a {
   gap: 8px;
 }
 
-.score-inputs label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-align: center;
-}
-
-.score-inputs label span {
-  max-width: 76px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .score-inputs input {
-  width: 100%;
+  width: 46px;
   height: 46px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -834,16 +820,18 @@ a {
     grid-template-columns: 1fr auto 1fr;
   }
 
-  .public-pick-preview > span {
+  .prediction-pick-preview {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .public-pick-preview > span,
+  .prediction-pick-preview > span {
     max-width: none;
   }
 
   .score-inputs {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .score-inputs label span {
-    max-width: none;
+    grid-template-columns: repeat(2, 46px);
+    justify-content: center;
   }
 
   .prediction-actions {

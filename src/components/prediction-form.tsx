@@ -46,9 +46,9 @@ export function PredictionForm({ match }: PredictionFormProps) {
           </p>
         ) : null}
       </div>
-      <div className="score-inputs" aria-label="Score prediction">
-        <label>
-          <span>{teamCode(match, "home")}</span>
+      <div className="prediction-pick-preview" aria-label="Score prediction">
+        <span>{teamCode(match, "home")}</span>
+        <div className="score-inputs">
           <input
             aria-label={`${teamName(match, "home")} score`}
             name="homeScore"
@@ -59,9 +59,6 @@ export function PredictionForm({ match }: PredictionFormProps) {
             defaultValue={prediction?.homeScore ?? ""}
             disabled={disabled}
           />
-        </label>
-        <label>
-          <span>{teamCode(match, "away")}</span>
           <input
             aria-label={`${teamName(match, "away")} score`}
             name="awayScore"
@@ -72,7 +69,8 @@ export function PredictionForm({ match }: PredictionFormProps) {
             defaultValue={prediction?.awayScore ?? ""}
             disabled={disabled}
           />
-        </label>
+        </div>
+        <span>{teamCode(match, "away")}</span>
       </div>
       {knockout && match.homeTeam && match.awayTeam ? (
         <label className="advancer-select">
