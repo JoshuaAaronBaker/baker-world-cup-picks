@@ -82,8 +82,9 @@ a {
   height: 34px;
   place-items: center;
   border-radius: 8px;
-  background: var(--grass);
-  color: white;
+  border: 1px solid rgba(23, 114, 69, 0.24);
+  background: #eef7f1;
+  font-size: 1.15rem;
 }
 
 .nav-actions {

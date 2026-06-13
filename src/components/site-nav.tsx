@@ -11,7 +11,9 @@ export async function SiteNav() {
 
   const brand = (
     <Link href="/" className="brand">
-      <span className="brand-mark">B</span>
+      <span className="brand-mark" aria-hidden="true">
+        ⚽
+      </span>
       <span>World Cup Pick’ems by Baker</span>
     </Link>
   );
