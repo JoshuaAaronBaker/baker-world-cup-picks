@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export type LeaderboardRow = {
@@ -75,7 +76,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
 
 export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
   const users = await prisma.user.findMany({
-    where: { hideFromLeaderboard: false },
+    where: { hideFromLeaderboard: false, role: UserRole.USER },
     select: {
       username: true,
       createdAt: true,
