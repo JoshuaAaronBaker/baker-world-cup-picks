@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { teamName } from "@/lib/display";
+import { teamCode, teamName } from "@/lib/display";
 import { formatPublicMatchTime, type getPublicTodaysMatches } from "@/lib/public-matches";
 
 type PublicMatch = Awaited<ReturnType<typeof getPublicTodaysMatches>>[number];
@@ -27,12 +27,12 @@ export function PublicMatchList({ matches }: PublicMatchListProps) {
             ) : null}
           </div>
           <div className="public-pick-preview" aria-label="Try a score prediction">
-            <span>{match.homeTeam?.name ?? "Home"}</span>
+            <span>{teamCode(match, "home")}</span>
             <div className="score-pick" aria-label="Score">
               <span>{match.homeScore ?? "-"}</span>
               <span>{match.awayScore ?? "-"}</span>
             </div>
-            <span>{match.awayTeam?.name ?? "Away"}</span>
+            <span>{teamCode(match, "away")}</span>
           </div>
           <div className="public-match-action">
             <span className={`status-pill status-${match.status.toLowerCase()}`}>
