@@ -1,5 +1,6 @@
 import { savePrediction } from "@/app/predictions/actions";
 import { MatchTiming } from "@/components/match-timing";
+import { plainTeamName, teamName } from "@/lib/display";
 import {
   formatPhase,
   getMatchStatusLabel,
@@ -15,17 +16,6 @@ type PredictionFormProps = {
   match: MatchWithPrediction;
 };
 
-function teamName(match: MatchWithPrediction, side: "home" | "away") {
-  const team = side === "home" ? match.homeTeam : match.awayTeam;
-  const placeholder = side === "home" ? match.homePlaceholder : match.awayPlaceholder;
-
-  if (team) {
-    return `${team.flagEmoji} ${team.name}`;
-  }
-
-  return placeholder ?? "Team pending";
-}
-
 export function PredictionForm({ match }: PredictionFormProps) {
   const prediction = match.predictions[0];
   const locked = isMatchLocked(match);
@@ -33,6 +23,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
   const disabled = locked || !predictable;
   const status = getMatchStatusLabel(match);
   const knockout = isKnockoutPhase(match.phase);
+  const canViewBreakdown = locked;
 
   return (
     <form className="prediction-row" action={savePrediction}>
@@ -82,13 +73,18 @@ export function PredictionForm({ match }: PredictionFormProps) {
             disabled={disabled}
           >
             <option value="">Pick team</option>
-            <option value={match.homeTeam.id}>{match.homeTeam.name}</option>
-            <option value={match.awayTeam.id}>{match.awayTeam.name}</option>
+            <option value={match.homeTeam.id}>{plainTeamName(match, "home")}</option>
+            <option value={match.awayTeam.id}>{plainTeamName(match, "away")}</option>
           </select>
         </label>
       ) : null}
       <div className="prediction-actions">
         <span className="status-pill">{status}</span>
+        {canViewBreakdown ? (
+          <a className="ghost-button small" href={`/matches/${match.id}`}>
+            Picks
+          </a>
+        ) : null}
         <button className="button small" type="submit" disabled={disabled}>
           {prediction ? "Update" : "Save"}
         </button>

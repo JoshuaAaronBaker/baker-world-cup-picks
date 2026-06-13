@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardPage() {
-  const leaderboard = await getLeaderboard();
+  const [leaderboard, currentUser] = await Promise.all([getLeaderboard(), getCurrentUser()]);
 
   return (
     <main className="app-shell">
@@ -24,7 +25,13 @@ export default async function LeaderboardPage() {
             leaderboard.map((player) => (
               <li key={player.username}>
                 <span className="rank">{player.rank}</span>
-                <span className="username">{player.username}</span>
+                {currentUser ? (
+                  <Link className="username username-link" href={`/users/${player.username}`}>
+                    {player.username}
+                  </Link>
+                ) : (
+                  <span className="username">{player.username}</span>
+                )}
                 <strong>{player.points} pts</strong>
               </li>
             ))

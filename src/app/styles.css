@@ -103,6 +103,11 @@ a {
   padding: 0 14px;
 }
 
+.ghost-button.small {
+  min-height: 36px;
+  padding: 0 12px;
+}
+
 .ghost-button {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.72);
@@ -484,6 +489,33 @@ a {
   font-weight: 900;
 }
 
+.table-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 14px;
+}
+
+.table-row span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.username-link {
+  color: var(--grass-dark);
+  font-weight: 900;
+}
+
 @media (max-width: 820px) {
   .app-shell {
     padding: 14px;
@@ -507,7 +539,8 @@ a {
   }
 
   .match-row,
-  .prediction-row {
+  .prediction-row,
+  .table-row {
     grid-template-columns: 1fr;
   }
 
