@@ -7,6 +7,7 @@ export type LeaderboardRow = {
   points: number;
   exactScores: number;
   correctResults: number;
+  scoredPicks: number;
 };
 
 type LeaderboardUserInput = {
@@ -30,12 +31,14 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
       const correctResults = user.predictions.filter(
         (prediction) => prediction.correctResult,
       ).length;
+      const scoredPicks = user.predictions.length;
 
       return {
         username: user.username,
         points,
         exactScores,
         correctResults,
+        scoredPicks,
         createdAt: user.createdAt,
       };
     })
@@ -62,6 +65,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[]): Leaderboard
       points: user.points,
       exactScores: user.exactScores,
       correctResults: user.correctResults,
+      scoredPicks: user.scoredPicks,
     };
   });
 

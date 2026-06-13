@@ -52,7 +52,7 @@ export default async function Home() {
                 <span className="username">
                   {player.username}
                   <small>
-                    {player.exactScores} exact · {player.correctResults} results
+                    {player.correctResults}/{player.scoredPicks} right · {player.exactScores} exact
                   </small>
                 </span>
                 <strong>{player.points} pts</strong>
