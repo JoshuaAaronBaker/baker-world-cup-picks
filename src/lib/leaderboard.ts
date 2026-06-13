@@ -15,6 +15,9 @@ export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> 
       username: true,
       createdAt: true,
       predictions: {
+        where: {
+          pointsAwarded: { not: null },
+        },
         select: {
           pointsAwarded: true,
           exactScore: true,
