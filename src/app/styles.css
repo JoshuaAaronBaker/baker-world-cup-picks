@@ -818,6 +818,18 @@ a {
   background: #fff0ef;
 }
 
+.table-row.prediction-result-missed-pick {
+  border-color: rgba(116, 124, 135, 0.28);
+  background: #f2f4f5;
+  color: #68717b;
+  opacity: 0.86;
+}
+
+.table-row.prediction-result-missed-pick a,
+.table-row.prediction-result-missed-pick span {
+  color: #68717b;
+}
+
 .table-row span {
   color: var(--muted);
   font-weight: 800;

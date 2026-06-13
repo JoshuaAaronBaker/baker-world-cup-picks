@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
+import { MatchStatus } from "@prisma/client";
 import { teamName } from "@/lib/display";
 import { formatLeaderboardPlacement, getLeaderboard } from "@/lib/leaderboard";
 import { formatMatchTime, formatPhase } from "@/lib/matches";
@@ -34,38 +35,57 @@ function pointsLabel(pointsAwarded: number | null) {
 export default async function UserPage({ params }: UserPageProps) {
   const viewer = await requireUser();
   const { username } = await params;
-  const [profileUser, leaderboard] = await Promise.all([
+  const [profileUser, leaderboard, matches] = await Promise.all([
     prisma.user.findUnique({
       where: { normalizedUsername: normalizeUsername(decodeURIComponent(username)) },
-      include: {
+      select: {
+        id: true,
+        username: true,
+        hideFromLeaderboard: true,
         predictions: {
-          include: {
-            predictedAdvancingTeam: true,
-            match: {
-              include: {
-                homeTeam: true,
-                awayTeam: true,
-              },
-            },
+          select: {
+            pointsAwarded: true,
+            exactScore: true,
+            correctResult: true,
           },
-          orderBy: { match: { kickoffAt: "asc" } },
         },
       },
     }),
     getLeaderboard(),
+    prisma.match.findMany({
+      where: {
+        tournament: { active: true },
+        status: { notIn: [MatchStatus.CANCELLED, MatchStatus.ABANDONED] },
+      },
+      include: {
+        homeTeam: true,
+        awayTeam: true,
+        predictions: {
+          where: { user: { normalizedUsername: normalizeUsername(decodeURIComponent(username)) } },
+          include: { predictedAdvancingTeam: true },
+        },
+      },
+      orderBy: { kickoffAt: "asc" },
+    }),
   ]);
 
   if (!profileUser || (profileUser.hideFromLeaderboard && profileUser.id !== viewer.id)) {
     notFound();
   }
 
-  const visiblePredictions = profileUser.predictions.filter((prediction) =>
-    canViewPrediction({
-      viewerUserId: viewer.id,
-      predictionUserId: profileUser.id,
-      match: prediction.match,
-    }),
-  );
+  const visibleMatches = matches.filter((match) => {
+    const prediction = match.predictions[0];
+
+    if (prediction) {
+      return canViewPrediction({
+        viewerUserId: viewer.id,
+        predictionUserId: profileUser.id,
+        match,
+      });
+    }
+
+    return canViewPredictionBreakdown({ viewerUserId: viewer.id, match });
+  });
   const totalPoints = profileUser.predictions.reduce(
     (total, prediction) => total + (prediction.pointsAwarded ?? 0),
     0,
@@ -90,29 +110,43 @@ export default async function UserPage({ params }: UserPageProps) {
           </div>
         </div>
         <div className="table-list">
-          {visiblePredictions.map((prediction) => (
-            <article className={`table-row ${predictionResultClass(prediction)}`} key={prediction.id}>
-              {canViewPredictionBreakdown({ viewerUserId: viewer.id, match: prediction.match }) ? (
-                <Link href={`/matches/${prediction.match.id}`}>
-                  {teamName(prediction.match, "home")} vs {teamName(prediction.match, "away")}
-                </Link>
-              ) : (
+          {visibleMatches.map((match) => {
+            const prediction = match.predictions[0];
+
+            return (
+              <article
+                className={`table-row ${prediction ? predictionResultClass(prediction) : "prediction-result-missed-pick"}`}
+                key={match.id}
+              >
+                {canViewPredictionBreakdown({ viewerUserId: viewer.id, match }) ? (
+                  <Link href={`/matches/${match.id}`}>
+                    {teamName(match, "home")} vs {teamName(match, "away")}
+                  </Link>
+                ) : (
+                  <span>
+                    {teamName(match, "home")} vs {teamName(match, "away")}
+                  </span>
+                )}
                 <span>
-                  {teamName(prediction.match, "home")} vs {teamName(prediction.match, "away")}
+                  {formatPhase(match.phase)} · {formatMatchTime(match.kickoffAt)}
                 </span>
-              )}
-              <span>
-                {formatPhase(prediction.match.phase)} · {formatMatchTime(prediction.match.kickoffAt)}
-              </span>
-              <strong>
-                {prediction.homeScore}-{prediction.awayScore}
-                {pointsLabel(prediction.pointsAwarded) ? (
-                  <span className="points-pill">{pointsLabel(prediction.pointsAwarded)}</span>
-                ) : null}
-              </strong>
-            </article>
-          ))}
-          {visiblePredictions.length === 0 ? (
+                {prediction ? (
+                  <strong>
+                    {prediction.homeScore}-{prediction.awayScore}
+                    {pointsLabel(prediction.pointsAwarded) ? (
+                      <span className="points-pill">{pointsLabel(prediction.pointsAwarded)}</span>
+                    ) : null}
+                  </strong>
+                ) : (
+                  <strong>
+                    Missed
+                    <span className="points-pill">0 points</span>
+                  </strong>
+                )}
+              </article>
+            );
+          })}
+          {visibleMatches.length === 0 ? (
             <p>No locked or own predictions are visible yet.</p>
           ) : null}
         </div>
