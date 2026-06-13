@@ -10,7 +10,7 @@ export function teamName(match: TeamDisplayMatch, side: "home" | "away") {
   const placeholder = side === "home" ? match.homePlaceholder : match.awayPlaceholder;
 
   if (team) {
-    return `${team.flagEmoji} ${team.countryCode}`;
+    return `${team.flagEmoji} ${team.name}`;
   }
 
   return placeholder ?? "Team pending";
