@@ -23,6 +23,11 @@ function predictionResultClass(prediction: { pointsAwarded: number | null; exact
   return "prediction-result-missed";
 }
 
+function pointsLabel(pointsAwarded: number | null) {
+  if (pointsAwarded === null) return null;
+  return pointsAwarded > 0 ? `+${pointsAwarded}` : "0";
+}
+
 export default async function UserPage({ params }: UserPageProps) {
   const viewer = await requireUser();
   const { username } = await params;
@@ -64,13 +69,15 @@ export default async function UserPage({ params }: UserPageProps) {
     <main className="app-shell">
       <SiteNav />
       <section className="game-grid">
-        <div className="section-heading">
-          <p className="eyebrow">{profileUser.id === viewer.id ? "My picks" : "Player profile"}</p>
-          <h1>{profileUser.username}</h1>
-        </div>
-        <div className="points-counter" aria-label="Total points">
-          <span>Total points</span>
-          <strong>{totalPoints}</strong>
+        <div className="page-title-row">
+          <div className="section-heading">
+            <p className="eyebrow">{profileUser.id === viewer.id ? "My picks" : "Player profile"}</p>
+            <h1>{profileUser.username}</h1>
+          </div>
+          <div className="points-counter" aria-label="Total points">
+            <span>Total points</span>
+            <strong>{totalPoints}</strong>
+          </div>
         </div>
         <div className="table-list">
           {visiblePredictions.map((prediction) => (
@@ -89,7 +96,9 @@ export default async function UserPage({ params }: UserPageProps) {
               </span>
               <strong>
                 {prediction.homeScore}-{prediction.awayScore}
-                {prediction.pointsAwarded !== null ? ` · ${prediction.pointsAwarded} pts` : ""}
+                {pointsLabel(prediction.pointsAwarded) ? (
+                  <span className="points-pill">{pointsLabel(prediction.pointsAwarded)}</span>
+                ) : null}
               </strong>
             </article>
           ))}

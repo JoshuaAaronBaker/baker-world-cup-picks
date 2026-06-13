@@ -27,7 +27,8 @@ export function PredictionForm({ match }: PredictionFormProps) {
   const canSavePrediction = !disabled;
   const stateClass = status.toLowerCase().replace(/\s+/g, "-");
   const finalWithScore = match.status === "FINAL" && match.homeScore !== null && match.awayScore !== null;
-  const scored = prediction?.pointsAwarded !== null && prediction?.pointsAwarded !== undefined;
+  const pointsAwarded = prediction?.pointsAwarded ?? null;
+  const scored = pointsAwarded !== null;
   const resultClass = scored
     ? prediction.exactScore
       ? "prediction-result-exact"
@@ -37,6 +38,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
     : finalWithScore
       ? "prediction-result-missed"
       : "";
+  const pointsLabel = scored ? (pointsAwarded > 0 ? `+${pointsAwarded}` : "0") : null;
 
   return (
     <form className={`prediction-row ${resultClass}`} action={savePrediction}>
@@ -102,8 +104,8 @@ export function PredictionForm({ match }: PredictionFormProps) {
       ) : null}
       <div className="prediction-actions">
         <span className={`status-pill status-${stateClass}`}>{status}</span>
-        {scored ? <span className="points-pill">{prediction.pointsAwarded} pts</span> : null}
-        {!prediction && finalWithScore ? <span className="points-pill">0 pts</span> : null}
+        {pointsLabel ? <span className="points-pill">{pointsLabel}</span> : null}
+        {!prediction && finalWithScore ? <span className="points-pill">0</span> : null}
         {canViewBreakdown ? (
           <a className="ghost-button small" href={`/matches/${match.id}`}>
             Picks

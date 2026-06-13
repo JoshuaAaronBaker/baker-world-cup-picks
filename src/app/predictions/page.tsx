@@ -57,17 +57,19 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
     <main className="app-shell">
       <SiteNav />
       <section className="game-grid">
-        <div className="section-heading">
-          <p className="eyebrow">Signed in as {user.username}</p>
-          <h1>My predictions</h1>
+        <div className="page-title-row">
+          <div className="section-heading">
+            <p className="eyebrow">Signed in as {user.username}</p>
+            <h1>My predictions</h1>
+          </div>
+          <div className="points-counter" aria-label="Total points">
+            <span>Total points</span>
+            <strong>{totalPoints}</strong>
+          </div>
         </div>
         <p className="progress-note">
           Predicted {progress.predicted} of {progress.available} available matches.
         </p>
-        <div className="points-counter" aria-label="Total points">
-          <span>Total points</span>
-          <strong>{totalPoints}</strong>
-        </div>
         <div className="rules-note" aria-label="Prediction rules">
           <strong>Scoring</strong>
           <span>3 points for an exact score, 1 point for the right result.</span>

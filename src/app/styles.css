@@ -285,6 +285,13 @@ a {
   margin-bottom: 14px;
 }
 
+.page-title-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 18px;
+}
+
 .centered-page {
   display: grid;
   justify-items: center;
@@ -488,6 +495,10 @@ a {
   white-space: nowrap;
 }
 
+.table-row .points-pill {
+  color: var(--ink);
+}
+
 .status-open,
 .status-scheduled {
   background: #eef7f1;
@@ -593,13 +604,13 @@ a {
   display: inline-grid;
   grid-template-columns: auto auto;
   align-items: baseline;
-  justify-content: start;
+  justify-content: end;
+  justify-self: end;
   gap: 10px;
   width: fit-content;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
-  margin-top: 12px;
   padding: 10px 12px;
   box-shadow: 0 10px 24px rgba(23, 33, 27, 0.06);
 }
@@ -759,6 +770,14 @@ a {
   font-weight: 800;
 }
 
+.table-row strong {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+}
+
 .username-link {
   color: var(--grass-dark);
   font-weight: 900;
@@ -879,6 +898,16 @@ a {
   .leaderboard-panel,
   .auth-form {
     padding: 16px;
+  }
+
+  .page-title-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .points-counter {
+    justify-self: start;
+    margin-top: 4px;
   }
 
   .match-row,
