@@ -285,6 +285,23 @@ a {
   margin-bottom: 14px;
 }
 
+.centered-page {
+  display: grid;
+  justify-items: center;
+}
+
+.centered-page .section-heading,
+.centered-page .form-note {
+  text-align: center;
+}
+
+.centered-page .form-note,
+.centered-page .auth-form,
+.centered-page .leaderboard-page-list {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .match-list {
   display: grid;
   gap: 12px;

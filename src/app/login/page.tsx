@@ -6,7 +6,7 @@ export default function LoginPage() {
   return (
     <main className="app-shell">
       <SiteNav />
-      <section className="game-grid">
+      <section className="game-grid centered-page">
         <div className="section-heading">
           <p className="eyebrow">Welcome back</p>
           <h1>Log in</h1>

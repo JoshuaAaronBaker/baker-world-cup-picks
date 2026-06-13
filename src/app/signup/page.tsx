@@ -23,7 +23,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   return (
     <main className="app-shell">
       <SiteNav />
-      <section className="game-grid">
+      <section className="game-grid centered-page">
         <div className="section-heading">
           <p className="eyebrow">Join the table</p>
           <h1>Sign up</h1>

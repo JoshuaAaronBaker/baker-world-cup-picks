@@ -19,7 +19,7 @@ export default async function LeaderboardPage() {
   return (
     <main className="app-shell">
       <SiteNav />
-      <section className="game-grid">
+      <section className="game-grid centered-page">
         <div className="section-heading">
           <p className="eyebrow">Public leaderboard</p>
           <h1>Rankings</h1>
