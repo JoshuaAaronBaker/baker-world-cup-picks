@@ -1,0 +1,391 @@
+:root {
+  color-scheme: light;
+  --ink: #17211b;
+  --muted: #5f6b63;
+  --paper: #fffdf7;
+  --panel: #ffffff;
+  --line: #dfe6de;
+  --grass: #177245;
+  --grass-dark: #0d5030;
+  --gold: #f5bf3d;
+  --blue: #2c6fbb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(180deg, rgba(23, 114, 69, 0.08), transparent 340px),
+    var(--paper);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.topbar,
+.hero,
+.game-grid {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0 28px;
+}
+
+.brand,
+.nav-actions,
+.hero-actions,
+.teams,
+.score-pick {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  font-weight: 800;
+}
+
+.brand-mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--grass);
+  color: white;
+}
+
+.nav-actions {
+  gap: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.button,
+.ghost-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0 18px;
+  font-weight: 800;
+}
+
+.button {
+  background: var(--grass);
+  color: white;
+  box-shadow: 0 10px 20px rgba(13, 80, 48, 0.18);
+}
+
+.button.small {
+  min-height: 36px;
+  padding: 0 14px;
+}
+
+.ghost-button {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 28px;
+  align-items: stretch;
+  padding: 18px 0 28px;
+}
+
+.hero-copy {
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 36px;
+  background:
+    linear-gradient(135deg, rgba(23, 114, 69, 0.94), rgba(44, 111, 187, 0.86)),
+    url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1400&q=80");
+  background-position: center;
+  background-size: cover;
+  color: white;
+}
+
+.hero h1,
+.hero h2,
+.game-grid h1,
+.game-grid h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.hero h1 {
+  max-width: 620px;
+  font-size: clamp(2.4rem, 4.8rem, 5.6rem);
+  line-height: 0.95;
+}
+
+.hero-copy p:not(.eyebrow) {
+  max-width: 590px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.hero-actions .ghost-button {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--grass);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.hero-copy .eyebrow {
+  color: var(--gold);
+}
+
+.leaderboard-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 24px;
+  box-shadow: 0 18px 48px rgba(23, 33, 27, 0.1);
+}
+
+.panel-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leaderboard-list li,
+.match-row {
+  display: grid;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.leaderboard-list li {
+  grid-template-columns: 42px 1fr auto;
+  padding: 12px;
+}
+
+.rank {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 8px;
+  background: #eef7f1;
+  color: var(--grass-dark);
+  font-weight: 900;
+}
+
+.username {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 800;
+}
+
+.game-grid {
+  padding: 28px 0 52px;
+}
+
+.section-heading {
+  margin-bottom: 14px;
+}
+
+.match-list {
+  display: grid;
+  gap: 12px;
+}
+
+.match-row {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 16px;
+}
+
+.match-time {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.teams {
+  flex-wrap: wrap;
+  gap: 9px;
+  font-weight: 900;
+}
+
+.versus {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.score-pick {
+  gap: 8px;
+}
+
+.score-pick span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfa;
+  font-weight: 900;
+}
+
+.status-pill {
+  min-width: 92px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: #eef7f1;
+  color: var(--grass-dark);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  width: min(420px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 18px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.auth-form input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--ink);
+  font: inherit;
+}
+
+.auth-form input:focus {
+  border-color: var(--grass);
+  outline: 3px solid rgba(23, 114, 69, 0.16);
+}
+
+.auth-form button {
+  border: 0;
+  cursor: pointer;
+}
+
+.auth-form button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.form-error {
+  margin: 0;
+  border-radius: 8px;
+  background: #fff0ed;
+  color: #9f2f24;
+  padding: 10px 12px;
+  font-weight: 800;
+}
+
+.form-note {
+  max-width: 420px;
+  color: var(--muted);
+}
+
+.form-note a {
+  color: var(--grass-dark);
+  font-weight: 900;
+}
+
+@media (max-width: 820px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .brand {
+    max-width: 190px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy {
+    min-height: 430px;
+    padding: 24px;
+  }
+
+  .match-row {
+    grid-template-columns: 1fr;
+  }
+
+  .score-pick,
+  .status-pill {
+    justify-self: start;
+  }
+}
