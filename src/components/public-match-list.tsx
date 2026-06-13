@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MatchStatus } from "@prisma/client";
 import { teamCode, teamName } from "@/lib/display";
 import { formatPublicMatchTime, type getPublicTodaysMatches } from "@/lib/public-matches";
 
@@ -11,8 +12,10 @@ type PublicMatchListProps = {
 export function PublicMatchList({ matches }: PublicMatchListProps) {
   return (
     <div className="match-list">
-      {matches.map((match) => (
-        <Link className="match-row public-match-link" href="/signup?next=/predictions" key={match.id}>
+      {matches.map((match) => {
+        const canPick = match.status === MatchStatus.SCHEDULED;
+        const content = (
+          <>
           <div>
             <p className="match-time">{formatPublicMatchTime(match.kickoffAt)}</p>
             <div className="teams">
@@ -38,10 +41,21 @@ export function PublicMatchList({ matches }: PublicMatchListProps) {
             <span className={`status-pill status-${match.status.toLowerCase()}`}>
               {match.status.toLowerCase()}
             </span>
-            <span className="ghost-button small">Make pick</span>
+            {canPick ? <span className="ghost-button small">Make pick</span> : null}
           </div>
-        </Link>
-      ))}
+          </>
+        );
+
+        return canPick ? (
+          <Link className="match-row public-match-link" href="/signup?next=/predictions" key={match.id}>
+            {content}
+          </Link>
+        ) : (
+          <article className="match-row" key={match.id}>
+            {content}
+          </article>
+        );
+      })}
       {matches.length === 0 ? (
         <p className="empty-state">No matches today. Check back after the next slate is loaded.</p>
       ) : null}
