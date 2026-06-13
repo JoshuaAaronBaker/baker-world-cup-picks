@@ -20,6 +20,8 @@ npm run prisma:migrate
 npm run db:seed
 ```
 
+Add your football-data.org token to `.env.local` as `FOOTBALL_DATA_API_KEY` before working on the provider integration.
+
 Run the app:
 
 ```sh
