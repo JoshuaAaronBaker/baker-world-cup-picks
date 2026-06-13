@@ -103,8 +103,8 @@ export default async function UserPage({ params }: UserPageProps) {
             <p className="eyebrow">{profileUser.id === viewer.id ? "My picks" : "Player profile"}</p>
             <h1>{profileUser.username}</h1>
           </div>
-          <div className="points-counter" aria-label="Total points">
-            <span>Total points</span>
+          <div className="points-counter" aria-label="Total Points">
+            <span>Total Points:</span>
             <strong>{totalPoints}</strong>
             {placement ? <small>{placement}</small> : null}
           </div>

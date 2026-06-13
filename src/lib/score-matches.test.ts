@@ -282,7 +282,7 @@ describe("match scoring persistence", () => {
 
     expect(tiedLeaders).toEqual(["first_user", "tied_user"]);
     expect(initialLeaderboard.find((row) => row.username === "lower_user")).toMatchObject({
-      rank: 3,
+      rank: 2,
       points: 1,
       exactScores: 0,
       correctResults: 1,

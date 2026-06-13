@@ -67,8 +67,8 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
             <p className="eyebrow">Signed in as {user.username}</p>
             <h1>My predictions</h1>
           </div>
-          <div className="points-counter" aria-label="Total points">
-            <span>Total points</span>
+          <div className="points-counter" aria-label="Total Points">
+            <span>Total Points:</span>
             <strong>{totalPoints}</strong>
             {placement ? <small>{placement}</small> : null}
           </div>

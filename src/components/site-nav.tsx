@@ -1,4 +1,5 @@
 import { UserRole } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 import { logOut } from "@/app/auth/actions";
 import { MobileSiteNav } from "@/components/mobile-site-nav";
@@ -11,10 +12,14 @@ export async function SiteNav() {
 
   const brand = (
     <Link href="/" className="brand">
-      <span className="brand-mark" aria-hidden="true">
-        ⚽
-      </span>
-      <span>World Cup Pick’ems by Baker</span>
+      <Image
+        className="brand-logo"
+        src="/brand-logo-transparent.png"
+        alt="World Cup Pick’ems by Baker"
+        width={882}
+        height={321}
+        priority
+      />
     </Link>
   );
   const actions = (
