@@ -1,5 +1,6 @@
 .env
 .env.local
+.env.neon
 .env.*.local
 
 node_modules
