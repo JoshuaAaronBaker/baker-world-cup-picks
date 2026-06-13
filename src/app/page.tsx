@@ -1,43 +1,31 @@
 import Link from "next/link";
+import { getLeaderboard } from "@/lib/leaderboard";
+import { prisma } from "@/lib/prisma";
 
-const leaderboard = [
-  { rank: 1, username: "Baker", points: 12 },
-  { rank: 2, username: "maria_10", points: 9 },
-  { rank: 3, username: "sam-j", points: 7 },
-  { rank: 4, username: "alex_92", points: 4 },
-];
+export const dynamic = "force-dynamic";
 
-const matches = [
-  {
-    flagA: "🇺🇸",
-    home: "United States",
-    flagB: "🇨🇦",
-    away: "Canada",
-    date: "Jun 12",
-    time: "5:00 PM PDT",
-    state: "Locks in 3h 12m",
-  },
-  {
-    flagA: "🇲🇽",
-    home: "Mexico",
-    flagB: "🇧🇷",
-    away: "Brazil",
-    date: "Jun 13",
-    time: "6:30 PM PDT",
-    state: "Predicted",
-  },
-  {
-    flagA: "🇫🇷",
-    home: "France",
-    flagB: "🇯🇵",
-    away: "Japan",
-    date: "Jun 14",
-    time: "2:00 PM PDT",
-    state: "Open",
-  },
-];
+async function getUpcomingPreview() {
+  return prisma.match.findMany({
+    where: { tournament: { active: true } },
+    include: { homeTeam: true, awayTeam: true },
+    orderBy: { kickoffAt: "asc" },
+    take: 3,
+  });
+}
 
-export default function Home() {
+function formatPreviewTime(kickoffAt: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(kickoffAt);
+}
+
+export default async function Home() {
+  const [leaderboard, matches] = await Promise.all([getLeaderboard(4), getUpcomingPreview()]);
+
   return (
     <main className="app-shell">
       <nav className="topbar" aria-label="Primary navigation">
@@ -78,13 +66,13 @@ export default function Home() {
             <h2 id="leaderboard-title">Rankings</h2>
           </div>
           <ol className="leaderboard-list">
-            {leaderboard.map((player) => (
+            {leaderboard.length ? leaderboard.map((player) => (
               <li key={player.username}>
                 <span className="rank">{player.rank}</span>
                 <span className="username">{player.username}</span>
                 <strong>{player.points} pts</strong>
               </li>
-            ))}
+            )) : <li>No picks yet. Be the first on the table.</li>}
           </ol>
         </section>
       </section>
@@ -96,26 +84,28 @@ export default function Home() {
         </div>
         <div className="match-list">
           {matches.map((match) => (
-            <article className="match-row" key={`${match.home}-${match.away}`}>
+            <article className="match-row" key={match.id}>
               <div>
-                <p className="match-time">
-                  {match.date} · {match.time}
-                </p>
+                <p className="match-time">{formatPreviewTime(match.kickoffAt)}</p>
                 <div className="teams">
                   <span>
-                    {match.flagA} {match.home}
+                    {match.homeTeam
+                      ? `${match.homeTeam.flagEmoji} ${match.homeTeam.name}`
+                      : match.homePlaceholder}
                   </span>
                   <span className="versus">vs</span>
                   <span>
-                    {match.flagB} {match.away}
+                    {match.awayTeam
+                      ? `${match.awayTeam.flagEmoji} ${match.awayTeam.name}`
+                      : match.awayPlaceholder}
                   </span>
                 </div>
               </div>
               <div className="score-pick" aria-label="Example score prediction">
-                <span>2</span>
-                <span>1</span>
+                <span>{match.homeScore ?? "-"}</span>
+                <span>{match.awayScore ?? "-"}</span>
               </div>
-              <span className="status-pill">{match.state}</span>
+              <span className="status-pill">{match.status.toLowerCase()}</span>
             </article>
           ))}
         </div>

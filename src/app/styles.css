@@ -252,6 +252,17 @@ a {
   padding: 16px;
 }
 
+.prediction-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 16px;
+}
+
 .match-time {
   margin: 0 0 8px;
   color: var(--muted);
@@ -295,6 +306,60 @@ a {
   font-size: 0.8rem;
   font-weight: 900;
   text-align: center;
+}
+
+.score-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.score-inputs input {
+  width: 48px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 900;
+  text-align: center;
+}
+
+.score-inputs input:focus {
+  border-color: var(--grass);
+  outline: 3px solid rgba(23, 114, 69, 0.16);
+}
+
+.score-inputs input:disabled {
+  background: #f3f5f1;
+  color: var(--muted);
+}
+
+.prediction-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prediction-actions button {
+  border: 0;
+  cursor: pointer;
+}
+
+.prediction-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.result-line,
+.progress-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.leaderboard-page-list {
+  max-width: 680px;
 }
 
 .auth-form {
@@ -380,12 +445,15 @@ a {
     padding: 24px;
   }
 
-  .match-row {
+  .match-row,
+  .prediction-row {
     grid-template-columns: 1fr;
   }
 
   .score-pick,
-  .status-pill {
+  .score-inputs,
+  .status-pill,
+  .prediction-actions {
     justify-self: start;
   }
 }
