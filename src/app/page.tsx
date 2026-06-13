@@ -1,30 +1,12 @@
 import Link from "next/link";
+import { PublicMatchList } from "@/components/public-match-list";
 import { getLeaderboard } from "@/lib/leaderboard";
-import { prisma } from "@/lib/prisma";
+import { getPublicTodaysMatches } from "@/lib/public-matches";
 
 export const dynamic = "force-dynamic";
 
-async function getUpcomingPreview() {
-  return prisma.match.findMany({
-    where: { tournament: { active: true } },
-    include: { homeTeam: true, awayTeam: true },
-    orderBy: { kickoffAt: "asc" },
-    take: 3,
-  });
-}
-
-function formatPreviewTime(kickoffAt: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(kickoffAt);
-}
-
 export default async function Home() {
-  const [leaderboard, matches] = await Promise.all([getLeaderboard(4), getUpcomingPreview()]);
+  const [leaderboard, matches] = await Promise.all([getLeaderboard(4), getPublicTodaysMatches(3)]);
 
   return (
     <main className="app-shell">
@@ -81,35 +63,9 @@ export default async function Home() {
       <section className="game-grid" aria-label="Game preview">
         <div className="section-heading">
           <p className="eyebrow">Prediction desk</p>
-          <h2>Upcoming matches</h2>
+          <h2>Today&apos;s matches</h2>
         </div>
-        <div className="match-list">
-          {matches.map((match) => (
-            <article className="match-row" key={match.id}>
-              <div>
-                <p className="match-time">{formatPreviewTime(match.kickoffAt)}</p>
-                <div className="teams">
-                  <span>
-                    {match.homeTeam
-                      ? `${match.homeTeam.flagEmoji} ${match.homeTeam.name}`
-                      : match.homePlaceholder}
-                  </span>
-                  <span className="versus">vs</span>
-                  <span>
-                    {match.awayTeam
-                      ? `${match.awayTeam.flagEmoji} ${match.awayTeam.name}`
-                      : match.awayPlaceholder}
-                  </span>
-                </div>
-              </div>
-              <div className="score-pick" aria-label="Example score prediction">
-                <span>{match.homeScore ?? "-"}</span>
-                <span>{match.awayScore ?? "-"}</span>
-              </div>
-              <span className="status-pill">{match.status.toLowerCase()}</span>
-            </article>
-          ))}
-        </div>
+        <PublicMatchList matches={matches} />
       </section>
     </main>
   );

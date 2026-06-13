@@ -290,6 +290,17 @@ a {
   padding: 16px;
 }
 
+.public-match-link {
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.public-match-link:hover {
+  border-color: var(--grass);
+  transform: translateY(-1px);
+}
+
 .prediction-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(160px, auto) auto;
@@ -426,6 +437,10 @@ a {
 
 .leaderboard-page-list {
   max-width: 680px;
+}
+
+.public-upcoming {
+  margin-top: 34px;
 }
 
 .auth-form {

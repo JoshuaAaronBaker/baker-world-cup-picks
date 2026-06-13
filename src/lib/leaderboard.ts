@@ -8,26 +8,17 @@ export type LeaderboardRow = {
   correctResults: number;
 };
 
-export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
-  const users = await prisma.user.findMany({
-    where: { hideFromLeaderboard: false },
-    select: {
-      username: true,
-      createdAt: true,
-      predictions: {
-        where: {
-          pointsAwarded: { not: null },
-        },
-        select: {
-          pointsAwarded: true,
-          exactScore: true,
-          correctResult: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "asc" },
-  });
+type LeaderboardUserInput = {
+  username: string;
+  createdAt: Date;
+  predictions: Array<{
+    pointsAwarded: number | null;
+    exactScore: boolean;
+    correctResult: boolean;
+  }>;
+};
 
+export function rankLeaderboardUsers(users: LeaderboardUserInput[]): LeaderboardRow[] {
   const sortedUsers = users
     .map((user) => {
       const points = user.predictions.reduce(
@@ -78,6 +69,31 @@ export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> 
       ranked[index].rank = ranked[index - 1].rank;
     }
   }
+
+  return ranked;
+}
+
+export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
+  const users = await prisma.user.findMany({
+    where: { hideFromLeaderboard: false },
+    select: {
+      username: true,
+      createdAt: true,
+      predictions: {
+        where: {
+          pointsAwarded: { not: null },
+        },
+        select: {
+          pointsAwarded: true,
+          exactScore: true,
+          correctResult: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const ranked = rankLeaderboardUsers(users);
 
   return typeof limit === "number" ? ranked.slice(0, limit) : ranked;
 }
