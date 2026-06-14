@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 const FOOTBALL_DATA_PROVIDER = "football-data";
 const FOOTBALL_DATA_WC_MATCHES_URL =
   "https://api.football-data.org/v4/competitions/WC/matches?season=2026";
+const FOOTBALL_DATA_RETRY_DELAYS_MS = process.env.NODE_ENV === "test" ? [0, 0] : [750, 1500];
 const TLA_FLAG_EMOJI: Record<string, string> = {
   ALG: "🇩🇿",
   ARG: "🇦🇷",
@@ -149,22 +150,40 @@ export function mapFootballDataStatus(status: string): MatchStatus {
   }
 }
 
+function wait(milliseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 export async function fetchFootballDataWorldCupMatches(apiKey = process.env.FOOTBALL_DATA_API_KEY) {
   if (!apiKey) {
     throw new Error("FOOTBALL_DATA_API_KEY is not configured.");
   }
 
-  const response = await fetch(FOOTBALL_DATA_WC_MATCHES_URL, {
-    headers: {
-      "X-Auth-Token": apiKey,
-    },
-  });
+  let lastError: unknown;
 
-  if (!response.ok) {
-    throw new Error(`football-data request failed with ${response.status}.`);
+  for (let attempt = 0; attempt <= FOOTBALL_DATA_RETRY_DELAYS_MS.length; attempt += 1) {
+    try {
+      const response = await fetch(FOOTBALL_DATA_WC_MATCHES_URL, {
+        headers: {
+          "X-Auth-Token": apiKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`football-data request failed with ${response.status}.`);
+      }
+
+      return (await response.json()) as FootballDataMatchesPayload;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < FOOTBALL_DATA_RETRY_DELAYS_MS.length) {
+        await wait(FOOTBALL_DATA_RETRY_DELAYS_MS[attempt]);
+      }
+    }
   }
 
-  return (await response.json()) as FootballDataMatchesPayload;
+  throw lastError;
 }
 
 export async function syncFootballDataWorldCup(input: SyncOptions = {}) {

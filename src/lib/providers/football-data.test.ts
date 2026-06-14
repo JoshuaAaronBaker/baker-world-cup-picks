@@ -1,6 +1,7 @@
 import { AuditAction, MatchPhase, MatchStatus, PrismaClient, UserRole } from "@prisma/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  fetchFootballDataWorldCupMatches,
   mapFootballDataStage,
   mapFootballDataStatus,
   syncFootballDataPayload,
@@ -99,6 +100,20 @@ describe("football-data provider", () => {
     expect(finalMatch.latestProviderPayload).toMatchObject({ id: 101, status: "FINISHED" });
     expect(timedMatch.phase).toBe(MatchPhase.ROUND_OF_32);
     expect(timedMatch.homePlaceholder).toBe("Home TBD");
+  });
+
+  it("retries transient football-data fetch failures", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch")
+      .mockRejectedValueOnce(new TypeError("fetch failed"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => payload,
+      } as Response);
+
+    await expect(fetchFootballDataWorldCupMatches("test-key")).resolves.toEqual(payload);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    fetchSpy.mockRestore();
   });
 
   it("scores predictions after a final score sync", async () => {
