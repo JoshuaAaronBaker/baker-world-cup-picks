@@ -383,6 +383,20 @@ a {
   font-weight: 800;
 }
 
+.username-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.user-flags {
+  flex: 0 0 auto;
+  font-size: 0.95em;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
 .username small {
   color: var(--muted);
   font-size: 0.76rem;

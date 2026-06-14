@@ -24,6 +24,7 @@ describe("getLeaderboard", () => {
     const [row] = rankLeaderboardUsers([
       {
         username: `${testUsernamePrefix}counter`,
+        nationalityFlags: "🇺🇸",
         createdAt: new Date("2026-01-01T00:00:00.000Z"),
         predictions: [
           { pointsAwarded: 3, exactScore: true, correctResult: true },
@@ -34,6 +35,7 @@ describe("getLeaderboard", () => {
     ], 4);
 
     expect(row).toMatchObject({
+      nationalityFlags: "🇺🇸",
       correctResults: 2,
       scoredPicks: 4,
     });

@@ -51,7 +51,10 @@ export default async function Home() {
               <li className={player.rank <= 3 ? `top-rank rank-${player.rank}` : ""} key={player.username}>
                 <LeaderboardRank rank={player.rank} />
                 <span className="username">
-                  {player.username}
+                  <span className="username-line">
+                    <span>{player.username}</span>
+                    {player.nationalityFlags ? <span className="user-flags">{player.nationalityFlags}</span> : null}
+                  </span>
                   <small>
                     {player.correctResults}/{player.scoredPicks} correct · {player.exactScores} exact
                   </small>

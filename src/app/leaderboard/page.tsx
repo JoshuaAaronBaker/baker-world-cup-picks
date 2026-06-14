@@ -42,14 +42,20 @@ export default async function LeaderboardPage() {
                 <LeaderboardRank rank={player.rank} />
                 {currentUser ? (
                   <Link className="username username-link" href={`/users/${player.username}`}>
-                    {player.username}
+                    <span className="username-line">
+                      <span>{player.username}</span>
+                      {player.nationalityFlags ? <span className="user-flags">{player.nationalityFlags}</span> : null}
+                    </span>
                     <small>
                       {player.correctResults}/{player.scoredPicks} correct · {player.exactScores} exact
                     </small>
                   </Link>
                 ) : (
                   <span className="username">
-                    {player.username}
+                    <span className="username-line">
+                      <span>{player.username}</span>
+                      {player.nationalityFlags ? <span className="user-flags">{player.nationalityFlags}</span> : null}
+                    </span>
                     <small>
                       {player.correctResults}/{player.scoredPicks} correct · {player.exactScores} exact
                     </small>

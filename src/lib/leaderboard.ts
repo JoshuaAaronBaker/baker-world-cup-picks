@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 export type LeaderboardRow = {
   rank: number;
   username: string;
+  nationalityFlags: string | null;
   points: number;
   exactScores: number;
   correctResults: number;
@@ -14,6 +15,7 @@ export type LeaderboardRow = {
 
 type LeaderboardUserInput = {
   username: string;
+  nationalityFlags?: string | null;
   createdAt: Date;
   predictions: Array<{
     pointsAwarded: number | null;
@@ -37,6 +39,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredM
 
       return {
         username: user.username,
+        nationalityFlags: user.nationalityFlags ?? null,
         points,
         exactScores,
         correctResults,
@@ -69,6 +72,7 @@ export function rankLeaderboardUsers(users: LeaderboardUserInput[], totalScoredM
     return {
       rank: currentRank,
       username: user.username,
+      nationalityFlags: user.nationalityFlags,
       points: user.points,
       exactScores: user.exactScores,
       correctResults: user.correctResults,
@@ -116,6 +120,7 @@ export async function getLeaderboard(limit?: number): Promise<LeaderboardRow[]> 
       where: { hideFromLeaderboard: false, role: UserRole.USER },
       select: {
         username: true,
+        nationalityFlags: true,
         createdAt: true,
         predictions: {
           where: {
