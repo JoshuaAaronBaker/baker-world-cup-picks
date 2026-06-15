@@ -10,12 +10,16 @@ export type TeamDisplayMatch = Pick<Match, "homePlaceholder" | "awayPlaceholder"
   awayTeam: Team | null;
 };
 
+export function teamFlagEmoji(team: Pick<Team, "countryCode" | "flagEmoji">) {
+  return TEAM_FLAG_OVERRIDES[team.countryCode] ?? team.flagEmoji;
+}
+
 export function teamName(match: TeamDisplayMatch, side: "home" | "away") {
   const team = side === "home" ? match.homeTeam : match.awayTeam;
   const placeholder = side === "home" ? match.homePlaceholder : match.awayPlaceholder;
 
   if (team) {
-    return `${TEAM_FLAG_OVERRIDES[team.countryCode] ?? team.flagEmoji} ${team.name}`;
+    return `${teamFlagEmoji(team)} ${team.name}`;
   }
 
   return placeholder ?? "Team pending";

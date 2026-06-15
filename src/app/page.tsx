@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LeaderboardConfetti } from "@/components/leaderboard-confetti";
 import { LeaderboardRank } from "@/components/leaderboard-rank";
 import { PublicMatchList } from "@/components/public-match-list";
 import { SiteNav } from "@/components/site-nav";
@@ -16,7 +17,7 @@ export default async function Home() {
     redirect("/predictions");
   }
 
-  const [leaderboard, matches] = await Promise.all([getLeaderboard(4), getPublicTodaysMatches(3)]);
+  const [leaderboard, matches] = await Promise.all([getLeaderboard(5), getPublicTodaysMatches(3)]);
 
   return (
     <main className="app-shell">
@@ -48,7 +49,16 @@ export default async function Home() {
           </div>
           <ol className="leaderboard-list">
             {leaderboard.length ? leaderboard.map((player) => (
-              <li className={player.rank <= 3 ? `top-rank rank-${player.rank}` : ""} key={player.username}>
+              <li
+                className={[
+                  player.rank <= 3 ? `top-rank rank-${player.rank}` : "",
+                  player.rank === 1 && !player.tied ? "sole-first" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={player.username}
+              >
+                {player.rank === 1 && !player.tied ? <LeaderboardConfetti /> : null}
                 <LeaderboardRank rank={player.rank} />
                 <span className="username">
                   <span className="username-line">

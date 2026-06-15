@@ -1,22 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatLocalMatchTime } from "@/components/local-match-time";
 import { LOCK_BUFFER_MINUTES } from "@/lib/matches";
 
 type MatchTimingProps = {
   kickoffAt: string;
   locked: boolean;
 };
-
-function formatLocalTime(kickoffAt: Date) {
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(kickoffAt);
-}
 
 function getCountdown(kickoffAt: Date, locked: boolean) {
   if (locked) return "Locked";
@@ -34,13 +25,13 @@ function getCountdown(kickoffAt: Date, locked: boolean) {
 }
 
 export function MatchTiming({ kickoffAt, locked }: MatchTimingProps) {
-  const [label, setLabel] = useState(() => formatLocalTime(new Date(kickoffAt)));
+  const [label, setLabel] = useState(() => formatLocalMatchTime(new Date(kickoffAt)));
   const [countdown, setCountdown] = useState<string | null>(null);
 
   useEffect(() => {
     const kickoffDate = new Date(kickoffAt);
     const update = () => {
-      setLabel(formatLocalTime(kickoffDate));
+      setLabel(formatLocalMatchTime(kickoffDate));
       setCountdown(getCountdown(kickoffDate, locked));
     };
 

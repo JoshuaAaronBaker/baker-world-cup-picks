@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { LocalMatchTime } from "@/components/local-match-time";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
 import { MatchStatus } from "@prisma/client";
@@ -128,7 +129,11 @@ export default async function UserPage({ params }: UserPageProps) {
                   </span>
                 )}
                 <span>
-                  {formatPhase(match.phase)} · {formatMatchTime(match.kickoffAt)}
+                  {formatPhase(match.phase)} ·{" "}
+                  <LocalMatchTime
+                    fallback={formatMatchTime(match.kickoffAt)}
+                    kickoffAt={match.kickoffAt.toISOString()}
+                  />
                 </span>
                 {prediction ? (
                   <strong>

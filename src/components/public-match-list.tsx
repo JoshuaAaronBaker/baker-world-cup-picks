@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MatchStatus } from "@prisma/client";
+import { LocalMatchTime } from "@/components/local-match-time";
 import { teamCode, teamName } from "@/lib/display";
 import { formatPublicMatchTime, type getPublicTodaysMatches } from "@/lib/public-matches";
 
@@ -17,7 +18,12 @@ export function PublicMatchList({ matches }: PublicMatchListProps) {
         const content = (
           <>
           <div>
-            <p className="match-time">{formatPublicMatchTime(match.kickoffAt)}</p>
+            <p className="match-time">
+              <LocalMatchTime
+                fallback={formatPublicMatchTime(match.kickoffAt)}
+                kickoffAt={match.kickoffAt.toISOString()}
+              />
+            </p>
             <div className="teams">
               <span>{teamName(match, "home")}</span>
               <span className="versus">vs</span>

@@ -26,6 +26,7 @@ export async function SiteNav() {
     <>
       <Link href="/">Home</Link>
       <Link href="/leaderboard">Leaderboard</Link>
+      <Link href="/standings">Standings</Link>
       {currentUser ? <Link href={`/users/${currentUser.username}`}>My picks</Link> : null}
       {isAdmin ? <Link href="/admin">Admin</Link> : null}
       {signedIn ? (
@@ -36,7 +37,9 @@ export async function SiteNav() {
         </form>
       ) : (
         <>
-          <Link href="/login">Log in</Link>
+          <Link href="/login" className="ghost-button small">
+            Log in
+          </Link>
           <Link href="/signup" className="button small">
             Sign up
           </Link>

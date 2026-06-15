@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { MatchPhase } from "@prisma/client";
+import { MatchPhase, MatchStatus } from "@prisma/client";
 import { MatchDateGroup } from "@/components/match-date-group";
 import { PredictionForm } from "@/components/prediction-form";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
+import { getAppTodayRange } from "@/lib/datetime";
 import { formatLeaderboardPlacement, getLeaderboard } from "@/lib/leaderboard";
 import {
   formatMatchDate,
@@ -23,13 +24,57 @@ type PredictionsPageProps = {
   }>;
 };
 
-function groupMatchesByDate(matches: Awaited<ReturnType<typeof getPredictionMatches>>) {
-  return matches.reduce<Record<string, typeof matches>>((groups, match) => {
+type GroupablePredictionMatch = {
+  kickoffAt: Date;
+  predictionsReopened: boolean;
+  status: MatchStatus;
+};
+
+type MatchGroup<TMatch> = {
+  defaultOpen: boolean;
+  label: string;
+  matches: TMatch[];
+};
+
+export function groupMatchesForPredictions<TMatch extends GroupablePredictionMatch>(
+  matches: TMatch[],
+  now = new Date(),
+): MatchGroup<TMatch>[] {
+  const { start: todayStart } = getAppTodayRange(now);
+  const completedMatches: TMatch[] = [];
+  const upcomingGroups = new Map<string, TMatch[]>();
+
+  for (const match of matches) {
+    const completedPastMatch = match.kickoffAt < todayStart && isMatchLocked(match);
+
+    if (completedPastMatch) {
+      completedMatches.push(match);
+      continue;
+    }
+
     const key = formatMatchDate(match.kickoffAt);
-    groups[key] = groups[key] ?? [];
-    groups[key].push(match);
-    return groups;
-  }, {});
+    upcomingGroups.set(key, [...(upcomingGroups.get(key) ?? []), match]);
+  }
+
+  const groups: MatchGroup<TMatch>[] = [];
+
+  if (completedMatches.length > 0) {
+    groups.push({
+      defaultOpen: false,
+      label: "Completed matches",
+      matches: completedMatches,
+    });
+  }
+
+  for (const [label, dateMatches] of upcomingGroups) {
+    groups.push({
+      defaultOpen: dateMatches.some((match) => !isMatchLocked(match, now)),
+      label,
+      matches: dateMatches,
+    });
+  }
+
+  return groups;
 }
 
 function phaseHref(phase: MatchPhase | "all") {
@@ -53,7 +98,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
     getLeaderboard(),
   ]);
   const progress = getPredictionProgress(matches);
-  const groupedMatches = groupMatchesByDate(matches);
+  const matchGroups = groupMatchesForPredictions(matches);
   const activePhase = phase ?? "all";
   const totalPoints = points._sum.pointsAwarded ?? 0;
   const placement = formatLeaderboardPlacement(
@@ -95,24 +140,20 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
           ))}
         </nav>
         <div className="match-groups">
-          {Object.entries(groupedMatches).map(([date, dateMatches]) => {
-            const hasUnlockedMatch = dateMatches.some((match) => !isMatchLocked(match));
-
-            return (
-              <MatchDateGroup
-                date={date}
-                defaultOpen={hasUnlockedMatch}
-                key={date}
-                matchCount={dateMatches.length}
-              >
+          {matchGroups.map((group) => (
+            <MatchDateGroup
+              date={group.label}
+              defaultOpen={group.defaultOpen}
+              key={group.label}
+              matchCount={group.matches.length}
+            >
               <div className="match-list">
-                {dateMatches.map((match) => (
+                {group.matches.map((match) => (
                   <PredictionForm key={match.id} match={match} />
                 ))}
               </div>
-              </MatchDateGroup>
-            );
-          })}
+            </MatchDateGroup>
+          ))}
           {matches.length === 0 ? <p>No matches in this phase yet.</p> : null}
         </div>
       </section>

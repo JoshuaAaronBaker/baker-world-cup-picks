@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { LocalMatchTime } from "@/components/local-match-time";
 import { SiteNav } from "@/components/site-nav";
 import { requireUser } from "@/lib/auth";
 import { plainTeamName, teamName } from "@/lib/display";
@@ -48,7 +49,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
       <section className="game-grid">
         <div className="section-heading">
           <p className="eyebrow">
-            {formatPhase(match.phase)} · {formatMatchTime(match.kickoffAt)}
+            {formatPhase(match.phase)} ·{" "}
+            <LocalMatchTime
+              fallback={formatMatchTime(match.kickoffAt)}
+              kickoffAt={match.kickoffAt.toISOString()}
+            />
           </p>
           <h1>
             {teamName(match, "home")} vs {teamName(match, "away")}

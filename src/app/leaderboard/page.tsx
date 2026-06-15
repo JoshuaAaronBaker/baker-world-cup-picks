@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeaderboardConfetti } from "@/components/leaderboard-confetti";
 import { LeaderboardRank } from "@/components/leaderboard-rank";
 import { PublicMatchList } from "@/components/public-match-list";
 import { SiteNav } from "@/components/site-nav";
@@ -33,12 +34,14 @@ export default async function LeaderboardPage() {
               <li
                 className={[
                   player.rank <= 3 ? `top-rank rank-${player.rank}` : "",
+                  player.rank === 1 && !player.tied ? "sole-first" : "",
                   currentUser?.username === player.username ? "current-user-row" : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
                 key={player.username}
               >
+                {player.rank === 1 && !player.tied ? <LeaderboardConfetti /> : null}
                 <LeaderboardRank rank={player.rank} />
                 {currentUser ? (
                   <Link className="username username-link" href={`/users/${player.username}`}>
