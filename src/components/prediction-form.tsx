@@ -14,9 +14,10 @@ import {
 
 type PredictionFormProps = {
   match: MatchWithPrediction;
+  returnTo: string;
 };
 
-export function PredictionForm({ match }: PredictionFormProps) {
+export function PredictionForm({ match, returnTo }: PredictionFormProps) {
   const prediction = match.predictions[0];
   const locked = isMatchLocked(match);
   const predictable = isMatchPredictable(match);
@@ -47,6 +48,7 @@ export function PredictionForm({ match }: PredictionFormProps) {
   return (
     <form className={`prediction-row ${resultClass}`} action={savePrediction}>
       <input type="hidden" name="matchId" value={match.id} />
+      <input type="hidden" name="redirectTo" value={returnTo} />
       <div>
         <p className="match-time">
           {formatPhase(match.phase)} ·{" "}

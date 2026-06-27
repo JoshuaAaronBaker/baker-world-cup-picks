@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import {
   getPredictedAdvancingTeamId,
@@ -10,6 +11,20 @@ import {
   validateScoreValue,
 } from "@/lib/matches";
 import { prisma } from "@/lib/prisma";
+
+function getSafePredictionRedirect(formData: FormData) {
+  const redirectTo = formData.get("redirectTo");
+
+  if (
+    typeof redirectTo === "string" &&
+    redirectTo.startsWith("/predictions") &&
+    !redirectTo.startsWith("//")
+  ) {
+    return redirectTo;
+  }
+
+  return "/predictions";
+}
 
 export async function savePrediction(formData: FormData) {
   const user = await requireUser();
@@ -85,4 +100,5 @@ export async function savePrediction(formData: FormData) {
 
   revalidatePath("/predictions");
   revalidatePath("/leaderboard");
+  redirect(getSafePredictionRedirect(formData));
 }

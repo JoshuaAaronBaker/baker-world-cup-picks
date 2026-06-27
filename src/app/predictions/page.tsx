@@ -100,6 +100,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
   const progress = getPredictionProgress(matches);
   const matchGroups = groupMatchesForPredictions(matches);
   const activePhase = phase ?? "all";
+  const returnTo = phaseHref(activePhase);
   const totalPoints = points._sum.pointsAwarded ?? 0;
   const placement = formatLeaderboardPlacement(
     leaderboard.find((player) => player.username === user.username),
@@ -149,7 +150,7 @@ export default async function PredictionsPage({ searchParams }: PredictionsPageP
             >
               <div className="match-list">
                 {group.matches.map((match) => (
-                  <PredictionForm key={match.id} match={match} />
+                  <PredictionForm key={match.id} match={match} returnTo={returnTo} />
                 ))}
               </div>
             </MatchDateGroup>
